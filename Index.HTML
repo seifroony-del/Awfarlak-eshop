@@ -28,7 +28,7 @@
             --text-secondary: #64748b;
             --glass-border: rgba(0, 0, 0, 0.08);
             --input-bg: #ffffff;
-            --accent-mint: #0f766e; /* لون داكن وراقي متناسق تماماً مع الخلفية البيضاء */
+            --accent-mint: #0f766e;
         }
 
         * {
@@ -93,7 +93,6 @@
             box-shadow: 0 0 10px var(--neon-orange-glow);
         }
 
-        /* كارت التواصل الموحد والبسيط تحت زر الأدمن */
         .compact-contact-card {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--glass-border);
@@ -505,7 +504,6 @@
 <body>
 
     <div class="top-navbar">
-        <!-- الجهة اليسرى: زر الأدمن وتحته كارت التواصل الموحد البسيط مباشرة -->
         <div class="left-control-panel">
             <button class="action-btn" onclick="openAdminGateway()">
                 <i class="fas fa-user-shield"></i> أدمن
@@ -535,7 +533,6 @@
             </div>
         </div>
 
-        <!-- الجهة اليمنى: زر التبديل بين الأوضاع -->
         <div class="right-control-panel">
             <button class="action-btn" id="theme-toggle" onclick="toggleThemeMode()">
                 <i class="fas fa-moon"></i> <span>الوضع الداكن</span>
@@ -612,7 +609,6 @@
                 `<i class="fas fa-moon"></i> <span>الوضع الداكن</span>`;
         }
 
-        // تم نقل وتأكيد عمل دوال السلايدر هنا في النطاق العالمي لضمان التقاط الكليكات بكفاءة
         function moveSlide(cardIdx, direction, event) {
             if (event) {
                 event.stopPropagation();
@@ -657,7 +653,8 @@
                 document.getElementById('staticPhoneLabel').href = "tel:" + cleanNum;
                 document.getElementById('staticWhatsAppLink').href = "https://wa.me/" + phoneNumber;
 
-                const response = await fetch(sheetWebUrl);
+                // تم إضافة ميزة كسر الكاش لضمان جلب البيانات الحية فورا بدون أي تأخير
+                const response = await fetch(`${sheetWebUrl}?t=${Date.now()}`);
                 localProductsMasterArray = await response.json();
                 
                 if (!localProductsMasterArray || localProductsMasterArray.length === 0) {
@@ -829,7 +826,10 @@
                     if (result.success) {
                         statusMsg.style.color = '#00f5d4';
                         statusMsg.innerText = "تم التحديث بنجاح! جاري إعادة جلب البيانات الجديدة...";
-                        fetchAndRenderCatalog();
+                        // جلب البيانات مع كسر كاش المتصفح لتعمل فوراً بدون أي تأخير
+                        setTimeout(() => {
+                            fetchAndRenderCatalog();
+                        }, 500);
                     } else {
                         statusMsg.style.color = '#ff2a5f';
                         statusMsg.innerText = "فشل التحديث: " + (result.message || "خطأ غير معروف");
