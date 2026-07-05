@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Overlk Catalog - كتالوج اوفرلك</title>
-    <!-- استدعاء الأيقونات والخطوط الاحترافية -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <!-- مكتبة تفكيك وقراءة ملفات الإكسيل برمجياً في المتصفح -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
-        /* التنسيق الأساسي ونظام الألوان السايبيربرانك والوضع المزدوج */
         :root {
             --bg-canvas: #07080c;
             --bg-card: rgba(16, 18, 27, 0.9);
@@ -24,7 +21,6 @@
             --input-bg: #121520;
         }
 
-        /* تنسيقات الوضع المضيء (Light Mode) */
         body.light-theme {
             --bg-canvas: #f4f6fa;
             --bg-card: #ffffff;
@@ -48,13 +44,11 @@
             padding: 20px;
             min-height: 100vh;
             overflow-x: hidden;
-            /* تحسين جودة وسرعة عمل السكرول عبر تفعيل تسريع العتاد للـ GPU */
             scroll-behavior: smooth;
             -webkit-font-smoothing: antialiased;
             transform: translateZ(0);
         }
 
-        /* شريط التحكم العلوي (الأدوات) */
         .top-navbar {
             display: flex;
             justify-content: space-between;
@@ -93,14 +87,9 @@
             box-shadow: 0 0 10px var(--neon-orange-glow);
         }
 
-        /* الهيدر النيوني البرتقالي الفاخر والمتحرك */
         @keyframes neonPulse {
-            0%, 100% {
-                text-shadow: 0 0 8px var(--neon-orange-glow), 0 0 20px rgba(255, 85, 0, 0.3);
-            }
-            50% {
-                text-shadow: 0 0 18px var(--neon-orange), 0 0 35px rgba(255, 85, 0, 0.5);
-            }
+            0%, 100% { text-shadow: 0 0 8px var(--neon-orange-glow), 0 0 20px rgba(255, 85, 0, 0.3); }
+            50% { text-shadow: 0 0 18px var(--neon-orange), 0 0 35px rgba(255, 85, 0, 0.5); }
         }
 
         .showcase-header {
@@ -118,7 +107,6 @@
             display: inline-block;
         }
 
-        /* أدوات الفلترة والبحث المتقدمة */
         .search-filter-container {
             max-width: 900px;
             margin: 0 auto 40px auto;
@@ -126,11 +114,7 @@
             gap: 20px;
         }
 
-        .search-box, .filter-box {
-            position: relative;
-            flex: 1;
-        }
-
+        .search-box, .filter-box { position: relative; flex: 1; }
         .search-box i {
             position: absolute;
             right: 15px;
@@ -164,17 +148,15 @@
             box-shadow: 0 0 12px var(--neon-orange-glow);
         }
 
-        /* شبكة عرض الكروت الفائقة - 5 كروت في الصف تلقائياً */
         .catalog-grid {
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 25px;
             max-width: 1600px;
             margin: 0 auto;
-            will-change: transform; /* إشعار المتصفح لتحسين أداء عمل السكرول */
+            will-change: transform;
         }
 
-        /* تعديل هيكلية وشكل الكارت حسب طلبك المحدّد */
         .dynamic-card {
             background: var(--bg-card);
             border-radius: 18px;
@@ -186,23 +168,22 @@
             will-change: transform;
         }
 
-        /* حركة وهhover الكارت الطبيعية العادية المريحة للعين */
         .dynamic-card:hover {
             transform: translateY(-6px);
             border-color: var(--neon-orange);
             box-shadow: 0 8px 25px rgba(255, 85, 0, 0.15);
         }
 
-        /* 1. وضع الصورة ف وسط وبداية الكارت */
         .image-canvas {
             position: relative;
             width: 100%;
-            height: 200px;
+            height: 220px;
             background: #11141e;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            border-bottom: 1px solid var(--glass-border);
         }
 
         .image-canvas img {
@@ -211,7 +192,6 @@
             object-fit: cover;
         }
 
-        /* 2. وضع التصنيف مباشرة تحت الصورة */
         .category-badge {
             display: inline-block;
             align-self: flex-start;
@@ -225,7 +205,6 @@
             font-weight: 700;
         }
 
-        /* 3. الداتات والتفاصيل تحتها بالترتيب */
         .card-details {
             padding: 0 15px 15px 15px;
             display: flex;
@@ -265,23 +244,9 @@
             margin-top: auto;
         }
 
-        .price-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .price-tag {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #ff2a5f;
-        }
-
-        .currency {
-            font-size: 0.75rem;
-            font-weight: normal;
-            margin-right: 3px;
-            color: var(--text-secondary);
-        }
+        .price-label { font-size: 0.8rem; color: var(--text-secondary); }
+        .price-tag { font-size: 1.3rem; font-weight: 800; color: #ff2a5f; }
+        .currency { font-size: 0.75rem; font-weight: normal; margin-right: 3px; color: var(--text-secondary); }
 
         .neon-order-btn {
             display: flex;
@@ -304,7 +269,6 @@
             transform: translateY(-1px);
         }
 
-        /* نافذة المودال المنبثقة للأدمن والتسجيل */
         .admin-modal {
             position: fixed;
             top: 0;
@@ -322,10 +286,7 @@
             transition: opacity 0.3s ease;
         }
 
-        .admin-modal.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .admin-modal.active { opacity: 1; pointer-events: auto; }
 
         .modal-content {
             background: var(--bg-card);
@@ -349,24 +310,10 @@
             cursor: pointer;
         }
 
-        .modal-content h2 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            color: var(--neon-orange);
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
+        .modal-content h2 { margin-bottom: 20px; font-size: 1.5rem; color: var(--neon-orange); text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: var(--text-secondary); }
+        
         .form-group input {
             width: 100%;
             padding: 12px;
@@ -377,18 +324,10 @@
             font-family: 'Tajawal', sans-serif;
             outline: none;
         }
+        .form-group input:focus { border-color: var(--neon-orange); }
 
-        .form-group input:focus {
-            border-color: var(--neon-orange);
-        }
-
-        /* لوحة التحكم الخاصة برفع الإكسيل بعد تسجيل الدخول للمسؤول */
-        .upload-panel {
-            display: none;
-            text-align: center;
-            padding: 20px 0;
-        }
-
+        .upload-panel { display: none; text-align: center; padding: 20px 0; }
+        
         .file-drop-zone {
             border: 2px dashed var(--glass-border);
             padding: 30px;
@@ -397,10 +336,7 @@
             cursor: pointer;
             margin-bottom: 15px;
         }
-
-        .file-drop-zone:hover {
-            border-color: var(--neon-orange);
-        }
+        .file-drop-zone:hover { border-color: var(--neon-orange); }
 
         .skeleton-loader {
             text-align: center;
@@ -409,13 +345,8 @@
             color: var(--text-secondary);
             font-size: 1.2rem;
         }
+        .skeleton-loader i { color: var(--neon-orange); margin-bottom: 15px; }
 
-        .skeleton-loader i {
-            color: var(--neon-orange);
-            margin-bottom: 15px;
-        }
-
-        /* الاستجابة ومرونة الشاشات (Responsive Grid) */
         @media (max-width: 1400px) { .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
         @media (max-width: 1100px) { .catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
         @media (max-width: 768px) {
@@ -428,7 +359,6 @@
 </head>
 <body>
 
-    <!-- شريط التحكم العلوي -->
     <div class="top-navbar">
         <button class="action-btn" id="theme-toggle" onclick="toggleThemeMode()">
             <i class="fas fa-moon"></i> <span>الوضع الداكن</span>
@@ -440,12 +370,10 @@
         </div>
     </div>
 
-    <!-- الهيدر النيوني المضيء المحدث والمتحرك برتقالي/أسود -->
     <div class="showcase-header">
         <h1 class="neon-title">اوفرلك - كتالوج</h1>
     </div>
 
-    <!-- عناصر البحث والفلترة الذكية المصممة في أعلى الصفحة -->
     <div class="search-filter-container">
         <div class="search-box">
             <i class="fas fa-search"></i>
@@ -458,7 +386,6 @@
         </div>
     </div>
 
-    <!-- شبكة عرض المنتجات الفائقة (خماسية التوزيع) -->
     <div class="catalog-grid" id="catalog-container">
         <div class="skeleton-loader">
             <i class="fas fa-circle-notch fa-3x fa-spin"></i>
@@ -466,12 +393,10 @@
         </div>
     </div>
 
-    <!-- نافذة الأدمن المنبثقة للمصادقة وتعديل ورفع شيت الإكسيل يومياً -->
     <div class="admin-modal" id="adminAuthWindow">
         <div class="modal-content">
             <button class="close-modal" onclick="closeAdminGateway()"><i class="fas fa-times"></i></button>
             
-            <!-- نموذج تسجيل الدخول -->
             <div id="loginFormSection">
                 <h2>تسجيل دخول الإدارة</h2>
                 <div class="form-group">
@@ -485,11 +410,10 @@
                 <button class="neon-order-btn" style="width:100%; margin-top:10px;" onclick="validateAdminCredentials()">دخول</button>
             </div>
 
-            <!-- واجهة رفع ملف الإكسيل المخصصة للمسؤول بعد المصادقة بنجاح -->
             <div id="adminActionSection" class="upload-panel">
                 <h2>لوحة تحديث البيانات اليومية</h2>
                 <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:15px;">
-                    قم برفع ملف الـ Excel المحدث بنفس الترتيب ليتم مزامنته تلقائياً مع شيت جوجل (جدول Password)
+                    قم برفع ملف الـ Excel المحدث وسيتم تحديث شيت جوجل فوراً.
                 </p>
                 <div class="file-drop-zone" onclick="document.getElementById('excelFileInput').click()">
                     <i class="fas fa-file-excel fa-3x" style="color: #27ae60; margin-bottom: 10px;"></i>
@@ -502,26 +426,21 @@
     </div>
 
     <script>
-        // ==================== إعدادات الربط والتحكم الذكي بمصادر البيانات ====================
+        // ضع الرابط الخاص بالـ Web App المنشور هنا بعد تحديث كود الـ Apps Script
         const sheetWebUrl = "https://script.google.com/macros/s/AKfycby8PaW4rTRez_rd4HM8HsqkPGlUOO22FbFRtubDf4tBdovHb5m7SEJJnnT1a8CQeeS7NA/exec";
         const phoneNumber = "201000000000"; 
         
-        let localProductsMasterArray = []; // المخزن المحلي لحفظ المنتجات لسرعة الفلترة بدون طلبات متكررة
+        let localProductsMasterArray = []; 
 
-        // دالة تبديل الثيم السريع (Light / Dark)
         function toggleThemeMode() {
             const body = document.body;
             const btn = document.getElementById('theme-toggle');
             body.classList.toggle('light-theme');
-            
-            if(body.classList.contains('light-theme')) {
-                btn.innerHTML = `<i class="fas fa-sun"></i> <span>الوضع المضيء</span>`;
-            } else {
-                btn.innerHTML = `<i class="fas fa-moon"></i> <span>الوضع الداكن</span>`;
-            }
+            btn.innerHTML = body.classList.contains('light-theme') ? 
+                `<i class="fas fa-sun"></i> <span>الوضع المضيء</span>` : 
+                `<i class="fas fa-moon"></i> <span>الوضع الداكن</span>`;
         }
 
-        // جلب المنتجات وبناء عناصر الفلترة والشبكة فوراً عند التحميل
         async function fetchAndRenderCatalog() {
             const container = document.getElementById('catalog-container');
             try {
@@ -529,62 +448,60 @@
                 localProductsMasterArray = await response.json();
                 
                 if (!localProductsMasterArray || localProductsMasterArray.length === 0) {
-                    container.innerHTML = '<div class="skeleton-loader">لم نجد أي منتجات معروضة حالياً في جدول البيانات.</div>';
+                    container.innerHTML = '<div class="skeleton-loader">لم نجد أي منتجات معروضة حالياً في شيت جوجل.</div>';
                     return;
                 }
                 
-                // استخراج وبناء قائمة التصنيفات الفريدة ديناميكياً لتغذية الـ Dropdown
                 const categorySelector = document.getElementById('categorySelectorDropdown');
                 const categories = new Set();
-                localProductsMasterArray.forEach(p => { if(p.category) categories.add(p.category); });
+                localProductsMasterArray.forEach(p => {
+                    const cat = p.category || p['التصنيف'];
+                    if(cat) categories.add(cat);
+                });
                 
-                // تصفير الخيارات الإضافية مع ترك الخيار الافتراضي الأرشد
                 categorySelector.innerHTML = '<option value="ALL">عرض كل التصنيفات</option>';
                 categories.forEach(cat => {
                     categorySelector.innerHTML += `<option value="${cat}">${cat}</option>`;
                 });
 
-                // تفعيل معالجة ورسم الكروت على الشاشة فوراً
                 renderCatalogGrid(localProductsMasterArray);
 
             } catch (error) {
-                console.error("خطأ ربط ومزامنة الـ API بنظام الكتالوج:", error);
-                container.innerHTML = '<div class="skeleton-loader" style="color: var(--neon-orange);">فشل الربط التلقائي، يرجى التحقق من صلاحيات الـ Web App.</div>';
+                console.error(error);
+                container.innerHTML = '<div class="skeleton-loader" style="color: var(--neon-orange);">فشل جلب البيانات. تأكد من نشر الـ Web App بصلاحية Anyone.</div>';
             }
         }
 
-        // محرك رسم بناء كروت المنتجات بهندسة التصميم الجديدة (الصورة -> التصنيف -> البيانات)
         function renderCatalogGrid(productsList) {
             const container = document.getElementById('catalog-container');
             container.innerHTML = ''; 
 
             productsList.forEach(product => {
-                const whatsappMessage = `مرحباً، أريد طلب هذا المنتج من خلال الكتالوج:\n\n📦 المنتج: ${product.title}\n🔢 الكود: ${product.code || 'N/A'}\n💰 السعر: ${product.price} EGP`;
+                // قراءة ذكية لعمود الصورة الذي أضفته (يدعم الاسم العربي والإنجليزي)
+                const imgUrl = product['الصوره'] || product['الصورة'] || product.image || product.Image || 'https://via.placeholder.com/400x300/161925/ffffff?text=No+Image';
+                const title = product.title || product['الاسم'] || product['اسم المنتج'] || 'منتج بدون اسم';
+                const price = product.price || product['السعر'] || '0';
+                const code = product.code || product['الكود'] || '';
+                const category = product.category || product['التصنيف'] || 'عام';
+                const description = product.description || product['الوصف'] || '';
+
+                const whatsappMessage = `مرحباً، أريد طلب هذا المنتج من خلال الكتالوج:\n\n📦 المنتج: ${title}\n🔢 الكود: ${code || 'N/A'}\n💰 السعر: ${price} EGP`;
                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
                 
                 const cardHTML = `
                     <div class="dynamic-card">
-                        <!-- 1. الصورة ف وسط وأعلى الكارت -->
                         <div class="image-canvas">
-                            <img src="${product.image || 'https://via.placeholder.com/400x300/161925/ffffff?text=No+Image'}" alt="${product.title}" loading="lazy">
+                            <img src="${imgUrl}" alt="${title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300/161925/ffffff?text=Error+Loading+Image'">
                         </div>
-                        
-                        <!-- 2. تحته التصنيف بتاعه مباشرة -->
-                        <span class="category-badge">${product.category || 'عام'}</span>
-                        
-                        <!-- 3. الداتات والتفاصيل تحتها -->
+                        <span class="category-badge">${category}</span>
                         <div class="card-details">
-                            <h3>${product.title}</h3>
-                            ${product.code ? `<div class="product-code">كود: ${product.code}</div>` : ''}
-                            <p>${product.description || 'وصف تفصيلي مميز يستعرض جودة وكفاءة مواصفات هذا المنتج الحصري الفاخر.'}</p>
-                            
+                            <h3>${title}</h3>
+                            ${code ? `<div class="product-code">كود: ${code}</div>` : ''}
+                            <p>${description}</p>
                             <div class="meta-pricing">
                                 <span class="price-label">سعر القطعة</span>
-                                <div class="price-tag">
-                                    ${product.price}<span class="currency">EGP</span>
-                                </div>
+                                <div class="price-tag">${price}<span class="currency">EGP</span></div>
                             </div>
-                            
                             <a href="${whatsappUrl}" target="_blank" class="neon-order-btn">
                                 <i class="fab fa-whatsapp fa-lg"></i> إرسال طلب الشراء
                             </a>
@@ -595,17 +512,18 @@
             });
         }
 
-        // نظام البحث والفلترة اللحظي الفائق بدون بطء في الاستجابة لقراءة المدخلات
         function triggerLiveSearchFilter() {
             const searchQuery = document.getElementById('catalogSearchInput').value.toLowerCase().trim();
             const selectedCategory = document.getElementById('categorySelectorDropdown').value;
 
             const filteredResults = localProductsMasterArray.filter(product => {
-                const matchesSearch = product.title.toLowerCase().includes(searchQuery) || 
-                                      (product.code && product.code.toLowerCase().includes(searchQuery)) ||
-                                      (product.description && product.description.toLowerCase().includes(searchQuery));
-                
-                const matchesCategory = (selectedCategory === 'ALL') || (product.category === selectedCategory);
+                const title = (product.title || product['الاسم'] || '').toLowerCase();
+                const code = (product.code || product['الكود'] || '').toLowerCase();
+                const desc = (product.description || product['الوصف'] || '').toLowerCase();
+                const cat = product.category || product['التصنيف'] || 'عام';
+
+                const matchesSearch = title.includes(searchQuery) || code.includes(searchQuery) || desc.includes(searchQuery);
+                const matchesCategory = (selectedCategory === 'ALL') || (cat === selectedCategory);
 
                 return matchesSearch && matchesCategory;
             });
@@ -613,7 +531,6 @@
             renderCatalogGrid(filteredResults);
         }
 
-        // ==================== إدارة بوابة الأدمن والمصادقة لرفع شيت الإكسيل ====================
         function openAdminGateway() {
             document.getElementById('adminAuthWindow').classList.add('active');
         }
@@ -622,11 +539,9 @@
             document.getElementById('adminAuthWindow').classList.remove('active');
         }
 
-        // إرسال التحقق من الهوية والبيانات إلى الـ Apps Script بالاعتماد على التسميات المحددة بشيت Password
         async function validateAdminCredentials() {
             const user = document.getElementById('adminUserField').value;
             const pass = document.getElementById('adminPasswordField').value;
-            const statusMsg = document.getElementById('uploadStatusMessage');
 
             if(!user || !pass) {
                 alert("برجاء إدخال اسم المستخدم وكلمة المرور أولاً!");
@@ -634,7 +549,7 @@
             }
 
             try {
-                // نرسل طلب مصادقة إلى الـ Web App الخاص بك
+                // إرسال البيانات بشكل نصي لتجنب مشاكل الـ CORS المسبقة (Preflight)
                 const response = await fetch(sheetWebUrl, {
                     method: 'POST',
                     body: JSON.stringify({
@@ -646,39 +561,31 @@
                 
                 const authResult = await response.json();
 
-                if(authResult.status === "success" || authResult.authorized === true) {
-                    // إذا نجحت المصادقة نخفي نموذج تسجيل الدخول ونعرض لوحة الرفع المباشر للملف
+                if(authResult.status === "success") {
                     document.getElementById('loginFormSection').style.display = 'none';
                     document.getElementById('adminActionSection').style.display = 'block';
                 } else {
-                    alert("بيانات الاعتماد غير صحيحة! يرجى مراجعة شيت Password.");
+                    alert("بيانات المسؤول غير صحيحة! يرجى مراجعة جدول الـ Password.");
                 }
             } catch (err) {
-                // محاكاة احتياطية للتطوير في حالة رغبتك في تشغيلها محلياً قبل ربط الـ POST
-                console.error("حدث خطأ أثناء الاتصال بالخادم للمصادقة: ", err);
-                alert("لم يتم إعداد كود الاستقبال POST بالـ Web App بعد، لكن تم فتح لوحة التحكم للمتابعة.");
-                document.getElementById('loginFormSection').style.display = 'none';
-                document.getElementById('adminActionSection').style.display = 'block';
+                console.error(err);
+                alert("فشل الاتصال بـ Google Apps Script السيرفر. تأكد من إعداد دالة doPost وتحديث النشر.");
             }
         }
 
-        // دالة معالجة وقراءة وتحويل شيت الإكسيل المرفوع مباشرة فوراً
         function handleExcelFileUpload(event) {
             const file = event.target.files[0];
             const statusZone = document.getElementById('uploadStatusMessage');
-            
             if (!file) return;
 
             statusZone.style.color = "var(--text-primary)";
-            statusZone.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري قراءة وتفكيك ملف الإكسيل...`;
+            statusZone.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري معالجة وقراءة ملف الإكسيل...`;
 
             const reader = new FileReader();
             reader.onload = async function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    // تحويل الشيت الأول داخل ملف الإكسيل إلى مصفوفة JSON
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
                     const excelParsedRows = XLSX.utils.sheet_to_json(worksheet);
@@ -689,9 +596,8 @@
                         return;
                     }
 
-                    statusZone.innerHTML = `<i class="fas fa-cloud-upload-alt fa-spin"></i> جاري نقل وجدولة البيانات لشيت جوجل مباشر...`;
+                    statusZone.innerHTML = `<i class="fas fa-cloud-upload-alt fa-spin"></i> جاري مزامنة البيانات مباشرة إلى شيت جوجل...`;
 
-                    // إرسال البيانات المفككة بالكامل فوراً للـ Web App لتحديث جدول البيانات الأصلي بنفس الترتيب
                     const uploadResponse = await fetch(sheetWebUrl, {
                         method: 'POST',
                         body: JSON.stringify({
@@ -704,25 +610,22 @@
 
                     if(syncResult.status === "success") {
                         statusZone.style.color = "#00f5d4";
-                        statusZone.innerHTML = `<i class="fas fa-check-circle"></i> تم رفع الأصناف بنجاح وتحديث شيت جوجل!`;
-                        // إعادة جلب البيانات لتحديث الواجهة تلقائياً بالبيانات المرفوعة حديثاً
+                        statusZone.innerHTML = `<i class="fas fa-check-circle"></i> تم تحديث شيت جوجل بنجاح ومزامنة الكتالوج!`;
                         fetchAndRenderCatalog();
                     } else {
                         statusZone.style.color = "#ff2a5f";
-                        statusZone.innerHTML = "فشل تحديث الأصناف على السيرفر الأساسي.";
+                        statusZone.innerHTML = "فشل تحديث الشيت، السيرفر رفض الطلب.";
                     }
 
                 } catch (error) {
-                    console.error("خطأ معالجة الإكسيل والرفع:", error);
+                    console.error(error);
                     statusZone.style.color = "#ff5500";
-                    statusZone.innerHTML = "حدث خطأ أثناء معالجة ونقل ملف الـ Excel.";
+                    statusZone.innerHTML = "حدث خطأ أثناء معالجة ونقل ملف الـ Excel للـ Web App.";
                 }
             };
-            
             reader.readAsArrayBuffer(file);
         }
 
-        // بدء تشغيل محرك الكتالوج فور تحميل الصفحة بالكامل
         document.addEventListener("DOMContentLoaded", fetchAndRenderCatalog);
     </script>
 </body>
