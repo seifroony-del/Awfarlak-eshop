@@ -694,13 +694,36 @@
                 const category = product['التصنيف'] || product.category || 'عام';
                 const boxQty = product['الكمية داخل الكرتونة'] || '';
 
-                const imagesArray = [];
-                if (product['الصورة']) imagesArray.push(product['الصورة']);
-                if (product['الصوره 2']) imagesArray.push(product['الصوره 2']);
-                if (product['الصوره 3']) imagesArray.push(product['الصوره 3']);
-                if (product['الصوره 4']) imagesArray.push(product['الصوره 4']);
+                // --- التعديل الجوهري للبحث الذكي عن الصور في كل الأعمدة ---
+                let imagesArray = [];
                 
-                if (imagesArray.length === 0) imagesArray.push('https://via.placeholder.com/400x300/161925/ffffff?text=No+Image');
+                Object.keys(product).forEach(key => {
+                    const val = product[key];
+                    const keyStr = String(key).toLowerCase();
+                    
+                    // إذا كان اسم العمود يحتوي على كلمات تدل على صورة، أو كانت القيمة نفسها عبارة عن رابط (URL)
+                    if (
+                        keyStr.includes('صورة') || 
+                        keyStr.includes('صوره') || 
+                        keyStr.includes('image') || 
+                        keyStr.includes('pic') || 
+                        (typeof val === 'string' && val.trim().startsWith('http'))
+                    ) {
+                        // التأكد من أن القيمة ليست فارغة 
+                        if (val && typeof val === 'string' && val.trim() !== '') {
+                            imagesArray.push(val.trim());
+                        }
+                    }
+                });
+
+                // إزالة أي روابط مكررة قد تنتج عن الفلترة
+                imagesArray = [...new Set(imagesArray)];
+                
+                // إضافة صورة افتراضية في حال عدم وجود أي صور للمنتج
+                if (imagesArray.length === 0) {
+                    imagesArray.push('https://via.placeholder.com/400x300/161925/ffffff?text=No+Image');
+                }
+                // --- نهاية التعديل ---
 
                 const whatsappMessage = `مرحباً، أريد طلب هذا المنتج :\n\n📦 المنتج: ${title}\n🔢 الكود: ${code || 'N/A'}\n💰 السعر: ${price} EGP`;
                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
@@ -773,7 +796,6 @@
         function openAdminGateway() { document.getElementById('adminAuthWindow').classList.add('active'); }
         function closeAdminGateway() { document.getElementById('adminAuthWindow').classList.remove('active'); }
 
-        /* تعديل جوهري لدالة التحقق لجعلها تستوعب أي صيغة نجاح يرسلها السيرفر لتجنب الخطأ الموضح في الصورة */
         async function validateAdminCredentials() {
             const user = document.getElementById('adminUserField').value;
             const pass = document.getElementById('adminPasswordField').value;
@@ -787,15 +809,12 @@
                 });
                 
                 const responseText = await response.text();
-                
-                // طباعة الرد في الـ Console لتسهيل تتبع أي أخطاء من السيرفر
                 console.log("Server Login Response:", responseText); 
                 
                 let isSuccess = false;
                 
                 try {
                     const parsedData = JSON.parse(responseText);
-                    // فحص مرن جداً لأغلب الصيغ اللي ممكن يرجعها السيرفر
                     if (parsedData === true || 
                         parsedData.success === true || 
                         parsedData.success === "true" || 
@@ -806,7 +825,6 @@
                         isSuccess = true;
                     }
                 } catch (e) {
-                    // في حال كان الرد نص عادي مش JSON
                     const lowerRes = responseText.toLowerCase().trim();
                     if (lowerRes === 'true' || 
                         lowerRes === 'success' || 
@@ -822,7 +840,6 @@
                     document.getElementById('adminUserField').value = '';
                     document.getElementById('adminPasswordField').value = '';
                 } else {
-                    // إذا ظهر هذا التنبيه مجدداً، يرجى التأكد من أن البيانات في الشيت صحيحة تماماً (نفس حالة الأحرف والمسافات)
                     alert("بيانات الإدارة غير صحيحة، يرجى المحاولة مرة أخرى.");
                 }
             } catch (error) {
