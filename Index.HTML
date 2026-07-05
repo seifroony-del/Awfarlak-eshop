@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,6 +28,7 @@
             --text-secondary: #64748b;
             --glass-border: rgba(0, 0, 0, 0.08);
             --input-bg: #ffffff;
+            --accent-mint: #0f766e; /* لون داكن وراقي متناسق تماماً مع الخلفية البيضاء */
         }
 
         * {
@@ -51,17 +52,27 @@
         .top-navbar {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             max-width: 1600px;
             margin: 0 auto 30px auto;
-            padding: 10px 20px;
+            padding: 20px;
             background: var(--bg-card);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
-        .nav-actions { display: flex; gap: 15px; align-items: center; }
+        .left-control-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .right-control-panel {
+            display: flex;
+            align-items: center;
+        }
 
         .action-btn {
             background: var(--input-bg);
@@ -80,6 +91,59 @@
         .action-btn:hover {
             border-color: var(--neon-orange);
             box-shadow: 0 0 10px var(--neon-orange-glow);
+        }
+
+        /* كارت التواصل الموحد والبسيط تحت زر الأدمن */
+        .compact-contact-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 260px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: right;
+        }
+        body.light-theme .compact-contact-card {
+            background: #f8fafc;
+        }
+
+        .contact-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            direction: rtl;
+        }
+
+        .contact-line i {
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        .contact-line .fa-phone-alt { color: #3498db; background: rgba(52, 152, 219, 0.1); }
+        .contact-line .fa-whatsapp { color: #2ecc71; background: rgba(46, 204, 113, 0.1); }
+        .contact-line .fa-facebook-f { color: #1877f2; background: rgba(24, 119, 242, 0.1); }
+        .contact-line .fa-map-marker-alt { color: #e74c3c; background: rgba(231, 76, 60, 0.1); }
+        .contact-line .fa-exclamation-circle { color: #ff2a5f; background: rgba(255, 42, 95, 0.1); }
+
+        .contact-line a, .contact-line span {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .contact-line a:hover { color: var(--neon-orange); }
+
+        .complaints-divider {
+            border-top: 1px dashed var(--glass-border);
+            padding-top: 8px;
+            margin-top: 4px;
         }
 
         @keyframes dynamicLogoAnim {
@@ -115,7 +179,7 @@
         .search-box, .filter-box { position: relative; flex: 1; }
         .search-box i {
             position: absolute;
-            right: 15px;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-secondary);
@@ -123,7 +187,7 @@
 
         .search-box input, .filter-box select {
             width: 100%;
-            padding: 14px 45px 14px 20px;
+            padding: 14px 20px 14px 45px;
             background-color: var(--bg-card);
             border: 1px solid var(--glass-border);
             border-radius: 14px;
@@ -131,14 +195,15 @@
             font-size: 1rem;
             font-family: 'Tajawal', sans-serif;
             outline: none;
+            text-align: right;
         }
 
         .filter-box select {
-            padding: 14px 20px 14px 45px;
+            padding: 14px 45px 14px 20px;
             appearance: none;
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
             background-repeat: no-repeat;
-            background-position: left 15px center;
+            background-position: right 15px center;
         }
 
         .search-box input:focus, .filter-box select:focus {
@@ -216,8 +281,8 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(7, 8, 12, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(7, 8, 12, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff;
             width: 36px;
             height: 36px;
@@ -226,9 +291,10 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 10;
+            z-index: 99;
             font-size: 0.95rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            pointer-events: auto;
         }
         .slider-arrow:hover { 
             background: var(--neon-orange); 
@@ -236,8 +302,8 @@
             border-color: var(--neon-orange);
             box-shadow: 0 0 10px var(--neon-orange-glow);
         }
-        .slider-arrow.prev { right: 10px; }
-        .slider-arrow.next { left: 10px; }
+        .slider-arrow.prev { left: 10px; }
+        .slider-arrow.next { right: 10px; }
 
         .slider-dots {
             position: absolute;
@@ -275,6 +341,7 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
+            text-align: right;
         }
 
         .card-details h3 {
@@ -306,6 +373,7 @@
             border-top: 1px solid var(--glass-border);
             padding-top: 12px;
             margin-top: auto;
+            direction: rtl;
         }
 
         .price-label { font-size: 0.8rem; color: var(--text-secondary); }
@@ -327,88 +395,18 @@
             margin-top: 15px;
             box-shadow: 0 4px 12px rgba(0, 245, 214, 0.2);
         }
-
         .neon-order-btn:hover {
             box-shadow: 0 0 18px rgba(0, 245, 214, 0.5);
         }
 
-        .premium-contact-section {
-            max-width: 1600px;
-            margin: 40px auto 20px auto;
-            padding: 35px;
-            background: linear-gradient(135deg, rgba(20, 24, 41, 0.95) 0%, rgba(10, 12, 22, 0.98) 100%);
-            border: 1px solid var(--glass-border);
-            border-top: 2px solid var(--neon-orange);
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        body.light-theme .neon-order-btn {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2);
         }
-
-        body.light-theme .premium-contact-section {
-            background: #ffffff;
-            border: 1px solid rgba(0,0,0,0.08);
-            border-top: 3px solid var(--neon-orange);
+        body.light-theme .neon-order-btn:hover {
+            box-shadow: 0 0 18px rgba(15, 118, 110, 0.4);
         }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 40px;
-        }
-
-        .contact-main-info h2 {
-            font-size: 1.8rem;
-            color: var(--neon-orange);
-            margin-bottom: 20px;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .contact-cards-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .info-sub-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--glass-border);
-            padding: 20px;
-            border-radius: 16px;
-            display: flex;
-            gap: 15px;
-            align-items: flex-start;
-        }
-        body.light-theme .info-sub-card { background: #f8fafc; }
-
-        .info-sub-card i {
-            font-size: 1.6rem;
-            color: var(--accent-mint);
-            padding-top: 3px;
-        }
-
-        .info-sub-card.fb-card i { color: #1877f2; }
-        .info-sub-card.wa-card i { color: #25d366; }
-
-        .info-sub-card h4 { font-size: 1rem; color: var(--text-primary); margin-bottom: 5px; font-weight: 700; }
-        .info-sub-card p, .info-sub-card a { font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; line-height: 1.4; }
-        .info-sub-card a:hover { color: var(--neon-orange); }
-
-        .complaints-box {
-            background: rgba(255, 42, 95, 0.05);
-            border: 1px dashed #ff2a5f;
-            padding: 25px;
-            border-radius: 18px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-        .complaints-box i { color: #ff2a5f; font-size: 2.2rem; margin-bottom: 12px; }
-        .complaints-box h3 { font-size: 1.2rem; color: var(--text-primary); margin-bottom: 8px; }
-        .complaints-box p { font-size: 1.3rem; font-weight: 800; color: #ff2a5f; letter-spacing: 0.5px; }
 
         .admin-modal {
             position: fixed;
@@ -443,7 +441,7 @@
 
         .close-modal {
             position: absolute;
-            left: 20px;
+            right: 20px;
             top: 20px;
             background: transparent;
             border: none;
@@ -453,7 +451,7 @@
         }
 
         .modal-content h2 { margin-bottom: 20px; font-size: 1.5rem; color: var(--neon-orange); text-align: center; }
-        .form-group { margin-bottom: 15px; }
+        .form-group { margin-bottom: 15px; text-align: right; }
         .form-group label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: var(--text-secondary); }
         
         .form-group input {
@@ -465,6 +463,7 @@
             color: var(--text-primary);
             font-family: 'Tajawal', sans-serif;
             outline: none;
+            text-align: right;
         }
         .form-group input:focus { border-color: var(--neon-orange); }
 
@@ -492,13 +491,13 @@
         @media (max-width: 1400px) { .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
         @media (max-width: 1100px) { 
             .catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } 
-            .contact-grid { grid-template-columns: 1fr; gap: 25px; }
         }
         @media (max-width: 768px) {
+            .top-navbar { flex-direction: column; gap: 15px; align-items: center; }
+            .left-control-panel { align-items: center; }
             .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
             .search-filter-container { flex-direction: column; gap: 10px; }
             .showcase-header h1 { font-size: 2.3rem; }
-            .contact-cards-container { grid-template-columns: 1fr; }
         }
         @media (max-width: 480px) { .catalog-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); } }
     </style>
@@ -506,12 +505,40 @@
 <body>
 
     <div class="top-navbar">
-        <button class="action-btn" id="theme-toggle" onclick="toggleThemeMode()">
-            <i class="fas fa-moon"></i> <span>الوضع الداكن</span>
-        </button>
-        <div class="nav-actions">
+        <!-- الجهة اليسرى: زر الأدمن وتحته كارت التواصل الموحد البسيط مباشرة -->
+        <div class="left-control-panel">
             <button class="action-btn" onclick="openAdminGateway()">
                 <i class="fas fa-user-shield"></i> أدمن
+            </button>
+            
+            <div class="compact-contact-card">
+                <div class="contact-line">
+                    <i class="fas fa-phone-alt"></i>
+                    <a href="tel:01202999612" id="staticPhoneLabel">01202999612</a>
+                </div>
+                <div class="contact-line">
+                    <i class="fab fa-whatsapp"></i>
+                    <a href="https://wa.me/201202999612" target="_blank" id="staticWhatsAppLink">واتساب الإدارة</a>
+                </div>
+                <div class="contact-line">
+                    <i class="fab fa-facebook-f"></i>
+                    <a href="https://www.facebook.com/KokySt" target="_blank">صفحة فيسبوك</a>
+                </div>
+                <div class="contact-line">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <a href="https://www.google.com/maps/search/?api=1&query=48XG%2BW5M" target="_blank">عنوان الفروع</a>
+                </div>
+                <div class="contact-line complaints-divider">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>الشكاوى: 01111159356</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- الجهة اليمنى: زر التبديل بين الأوضاع -->
+        <div class="right-control-panel">
+            <button class="action-btn" id="theme-toggle" onclick="toggleThemeMode()">
+                <i class="fas fa-moon"></i> <span>الوضع الداكن</span>
             </button>
         </div>
     </div>
@@ -536,54 +563,6 @@
         <div class="skeleton-loader">
             <i class="fas fa-circle-notch fa-3x fa-spin"></i>
             <div>جاري تحميل المنتجات وتأمين الإتصال السريع...</div>
-        </div>
-    </div>
-
-    <!-- كارت التواصل الاحترافي المحدث والمربوط بالرقم الجديد تلقائياً -->
-    <div class="premium-contact-section">
-        <div class="contact-grid">
-            <div class="contact-main-info">
-                <h2><i class="fas fa-address-card"></i> مركز تواصل وفروع اوفرلك</h2>
-                <div class="contact-cards-container">
-                    <div class="info-sub-card">
-                        <i class="fas fa-phone-alt"></i>
-                        <div>
-                            <h4>موبايل التواصل الرئيسي</h4>
-                            <a href="tel:01202999612" id="staticPhoneLabel">01202999612</a>
-                        </div>
-                    </div>
-                    <div class="info-sub-card wa-card">
-                        <i class="fab fa-whatsapp"></i>
-                        <div>
-                            <h4>المراسلة الفورية عبر واتساب</h4>
-                            <a href="https://wa.me/201202999612" target="_blank" id="staticWhatsAppLink">01202999612 (اضغط للدردشة)</a>
-                        </div>
-                    </div>
-                    <div class="info-sub-card fb-card">
-                        <i class="fab fa-facebook-f"></i>
-                        <div>
-                            <h4>الصفحة الرسمية على فيسبوك</h4>
-                            <a href="https://www.facebook.com/KokySt" target="_blank">facebook.com/KokySt</a>
-                        </div>
-                    </div>
-                    <div class="info-sub-card">
-                        <i class="fas fa-map-marked-alt"></i>
-                        <div>
-                            <h4>مقر وعنوان الإدارة</h4>
-                            <p>شارع الجمهوريه متفرع من شارع الفريد، عزبة النخل.</p>
-                            <a href="https://www.google.com/maps/search/?api=1&query=48XG%2BW5M" target="_blank" style="color: var(--accent-mint); font-weight: bold; display: inline-block; margin-top: 5px;">
-                                <i class="fas fa-directions"></i> عرض موقعنا على الخريطة (Plus Code)
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="complaints-box">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h3>قسم الشكاوى والاستفسارات</h3>
-                <p>01111159356</p>
-            </div>
         </div>
     </div>
 
@@ -620,12 +599,8 @@
     </div>
 
     <script>
-        // إعدادات الربط الثابتة واللوجيك الخاص بك
         const sheetWebUrl = "https://script.google.com/macros/s/AKfycby8PaW4rTRez_rd4HM8HsqkPGlUOO22FbFRtubDf4tBdovHb5m7SEJJnnT1a8CQeeS7NA/exec";
-        
-        // غير هذا الرقم وسيحدث السكربت نفسه تلقائياً في كل الأزرار والكروت بالأسفل
         const phoneNumber = "201202999612"; 
-        
         let localProductsMasterArray = []; 
 
         function toggleThemeMode() {
@@ -637,14 +612,49 @@
                 `<i class="fas fa-moon"></i> <span>الوضع الداكن</span>`;
         }
 
+        // تم نقل وتأكيد عمل دوال السلايدر هنا في النطاق العالمي لضمان التقاط الكليكات بكفاءة
+        function moveSlide(cardIdx, direction, event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            const card = document.getElementById(`card-${cardIdx}`);
+            if (!card) return;
+            let currentSlide = parseInt(card.getAttribute('data-current-slide')) || 0;
+            const totalSlides = parseInt(card.getAttribute('data-total-slides')) || 1;
+
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            setSlide(cardIdx, currentSlide);
+        }
+
+        function setSlide(cardIdx, slideIdx, event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            const card = document.getElementById(`card-${cardIdx}`);
+            if (!card) return;
+            card.setAttribute('data-current-slide', slideIdx);
+
+            const slides = card.querySelectorAll('.slider-slide');
+            slides.forEach((slide, idx) => {
+                if (idx === slideIdx) slide.classList.add('active');
+                else slide.classList.remove('active');
+            });
+
+            const dots = card.querySelectorAll('.slider-dot');
+            dots.forEach((dot, idx) => {
+                if (idx === slideIdx) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+        }
+
         async function fetchAndRenderCatalog() {
             const container = document.getElementById('catalog-container');
             try {
-                // تحديث كروت التواصل الثابتة بناء على رقم الـ WhatsApp الرئيسي المحدد بالأعلى
                 const cleanNum = phoneNumber.startsWith('2') ? phoneNumber.substring(2) : phoneNumber;
                 document.getElementById('staticPhoneLabel').innerText = cleanNum;
                 document.getElementById('staticPhoneLabel').href = "tel:" + cleanNum;
-                document.getElementById('staticWhatsAppLink').innerText = cleanNum + " (اضغط للدردشة)";
                 document.getElementById('staticWhatsAppLink').href = "https://wa.me/" + phoneNumber;
 
                 const response = await fetch(sheetWebUrl);
@@ -708,12 +718,12 @@
                 let dotsHTML = '';
                 if (imagesArray.length > 1) {
                     controlsHTML = `
-                        <button class="slider-arrow prev" onclick="moveSlide(${pIndex}, -1)">❮</button>
-                        <button class="slider-arrow next" onclick="moveSlide(${pIndex}, 1)">❯</button>
+                        <button class="slider-arrow prev" onclick="moveSlide(${pIndex}, -1, event)">❮</button>
+                        <button class="slider-arrow next" onclick="moveSlide(${pIndex}, 1, event)">❯</button>
                     `;
                     dotsHTML = `<div class="slider-dots">`;
                     imagesArray.forEach((_, imgIdx) => {
-                        dotsHTML += `<span class="slider-dot ${imgIdx === 0 ? 'active' : ''}" onclick="setSlide(${pIndex}, ${imgIdx})"></span>`;
+                        dotsHTML += `<span class="slider-dot ${imgIdx === 0 ? 'active' : ''}" onclick="setSlide(${pIndex}, ${imgIdx}, event)"></span>`;
                     });
                     dotsHTML += `</div>`;
                 }
@@ -745,35 +755,6 @@
                 container.insertAdjacentHTML('beforeend', cardHTML);
             });
         }
-
-        window.moveSlide = function(cardIdx, direction) {
-            const card = document.getElementById(`card-${cardIdx}`);
-            let currentSlide = parseInt(card.getAttribute('data-current-slide'));
-            const totalSlides = parseInt(card.getAttribute('data-total-slides'));
-
-            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
-            setSlide(cardIdx, currentSlide);
-        };
-
-        window.setSlide = function(cardIdx, slideIdx) {
-            const card = document.getElementById(`card-${cardIdx}`);
-            card.setAttribute('data-current-slide', slideIdx);
-
-            const slides = card.querySelectorAll('.slider-slide');
-            slides.forEach((slide, idx) => {
-                if (idx === slideIdx) {
-                    slide.classList.add('active');
-                } else {
-                    slide.classList.remove('active');
-                }
-            });
-
-            const dots = card.querySelectorAll('.slider-dot');
-            dots.forEach((dot, idx) => {
-                if (idx === slideIdx) dot.classList.add('active');
-                else dot.classList.remove('active');
-            });
-        };
 
         function triggerLiveSearchFilter() {
             const searchQuery = document.getElementById('catalogSearchInput').value.toLowerCase().trim();
@@ -862,7 +843,6 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // تشغيل الجلب التلقائي فور تحميل الصفحة وبناء كارت التواصل بالكامل
         document.addEventListener('DOMContentLoaded', fetchAndRenderCatalog);
     </script>
 </body>
