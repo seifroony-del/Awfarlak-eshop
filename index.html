@@ -1,334 +1,729 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium 3D Neon Catalog</title>
-    <!-- خطوط ذكية واستدعاء الأيقونات -->
+    <title>Overlk Catalog - كتالوج اوفرلك</title>
+    <!-- استدعاء الأيقونات والخطوط الاحترافية -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- مكتبة تفكيك وقراءة ملفات الإكسيل برمجياً في المتصفح -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
-        /* التنسيق الأساسي ونظام الألوان السايبيربرانك */
+        /* التنسيق الأساسي ونظام الألوان السايبيربرانك والوضع المزدوج */
         :root {
-            --bg-canvas: #0a0b10;
-            --bg-card: rgba(18, 20, 29, 0.7);
-            --neon-pink: #ff2a5f;
-            --neon-mint: #00f5d4;
+            --bg-canvas: #07080c;
+            --bg-card: rgba(16, 18, 27, 0.9);
+            --neon-orange: #ff5500;
+            --neon-orange-glow: rgba(255, 85, 0, 0.6);
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
             --glass-border: rgba(255, 255, 255, 0.05);
+            --accent-mint: #00f5d4;
+            --input-bg: #121520;
+        }
+
+        /* تنسيقات الوضع المضيء (Light Mode) */
+        body.light-theme {
+            --bg-canvas: #f4f6fa;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --input-bg: #ffffff;
         }
 
         * {
             box-sizing: border-box;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
+            font-family: 'Tajawal', 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-canvas);
             color: var(--text-primary);
-            margin: 0;
-            padding: 40px 20px;
+            padding: 20px;
             min-height: 100vh;
             overflow-x: hidden;
-            direction: ltr; /* التزام كامل بنظام التصفح والشبكات اليسار إلى اليمين */
+            /* تحسين جودة وسرعة عمل السكرول عبر تفعيل تسريع العتاد للـ GPU */
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            transform: translateZ(0);
         }
 
-        /* خلفية نيون متحركة في العمق لتعزيز العمق البصري */
-        body::before {
-            content: '';
-            position: absolute;
-            top: -10%;
-            left: -10%;
-            width: 50%;
-            height: 60%;
-            background: radial-gradient(circle, rgba(255, 42, 95, 0.08) 0%, transparent 70%);
-            z-index: -1;
-            pointer-events: none;
+        /* شريط التحكم العلوي (الأدوات) */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto 30px auto;
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
-        body::after {
-            content: '';
-            position: absolute;
-            bottom: -10%;
-            right: -10%;
-            width: 50%;
-            height: 60%;
-            background: radial-gradient(circle, rgba(0, 245, 214, 0.06) 0%, transparent 70%);
-            z-index: -1;
-            pointer-events: none;
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
         }
 
-        /* الهيدر الاحترافي المتوهج */
+        .action-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .action-btn:hover {
+            border-color: var(--neon-orange);
+            box-shadow: 0 0 10px var(--neon-orange-glow);
+        }
+
+        /* الهيدر النيوني البرتقالي الفاخر والمتحرك */
+        @keyframes neonPulse {
+            0%, 100% {
+                text-shadow: 0 0 8px var(--neon-orange-glow), 0 0 20px rgba(255, 85, 0, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 18px var(--neon-orange), 0 0 35px rgba(255, 85, 0, 0.5);
+            }
+        }
+
         .showcase-header {
             text-align: center;
-            max-width: 800px;
-            margin: 0 auto 50px auto;
-            padding: 30px;
-            position: relative;
+            margin-bottom: 40px;
         }
 
         .showcase-header h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin: 0 0 15px 0;
-            letter-spacing: -1px;
-            background: linear-gradient(135deg, var(--text-primary) 30%, var(--neon-pink) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(255, 42, 95, 0.2);
+            font-size: 3.8rem;
+            font-weight: 900;
+            color: var(--neon-orange);
+            -webkit-text-stroke: 1.5px #000000;
+            letter-spacing: 1px;
+            animation: neonPulse 2.5s infinite ease-in-out;
+            display: inline-block;
         }
 
-        .showcase-header p {
+        /* أدوات الفلترة والبحث المتقدمة */
+        .search-filter-container {
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+            display: flex;
+            gap: 20px;
+        }
+
+        .search-box, .filter-box {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
             color: var(--text-secondary);
-            font-size: 1.15rem;
-            margin: 0;
-            font-weight: 300;
         }
 
-        /* شبكة عرض الكروت ثلاثية الأبعاد الفائقة السرعة */
+        .search-box input, .filter-box select {
+            width: 100%;
+            padding: 14px 45px 14px 20px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'Tajawal', sans-serif;
+            outline: none;
+        }
+
+        .filter-box select {
+            padding: 14px 20px 14px 45px;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+            background-repeat: no-repeat;
+            background-position: left 15px center;
+        }
+
+        .search-box input:focus, .filter-box select:focus {
+            border-color: var(--neon-orange);
+            box-shadow: 0 0 12px var(--neon-orange-glow);
+        }
+
+        /* شبكة عرض الكروت الفائقة - 5 كروت في الصف تلقائياً */
         .catalog-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 35px;
-            max-width: 1300px;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 25px;
+            max-width: 1600px;
             margin: 0 auto;
-            perspective: 1000px; /* تفعيل العمق الفراغي للكروت */
+            will-change: transform; /* إشعار المتصفح لتحسين أداء عمل السكرول */
         }
 
-        /* الكارت بتأثير الـ 3D والنيون المتطور */
+        /* تعديل هيكلية وشكل الكارت حسب طلبك المحدّد */
         .dynamic-card {
             background: var(--bg-card);
-            border-radius: 24px;
+            border-radius: 18px;
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             overflow: hidden;
-            position: relative;
             display: flex;
             flex-direction: column;
-            transform-style: preserve-3d;
-            will-change: transform, box-shadow;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            will-change: transform;
         }
 
-        /* تأثير النيون المتوهج عند التفاعل وحركات الـ 3D Elevate */
+        /* حركة وهhover الكارت الطبيعية العادية المريحة للعين */
         .dynamic-card:hover {
-            transform: translateY(-10px) rotateX(4deg) rotateY(-2deg) scale(1.02);
-            border-color: rgba(0, 245, 214, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 245, 214, 0.1), 0 0 30px rgba(255, 42, 95, 0.05);
+            transform: translateY(-6px);
+            border-color: var(--neon-orange);
+            box-shadow: 0 8px 25px rgba(255, 85, 0, 0.15);
         }
 
-        /* حاوية الصورة الرقمية للتحكم الفاخر بالـ 3D */
+        /* 1. وضع الصورة ف وسط وبداية الكارت */
         .image-canvas {
             position: relative;
             width: 100%;
-            height: 250px;
+            height: 200px;
+            background: #11141e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
-            background: #161925;
         }
 
         .image-canvas img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scale(1);
         }
 
-        .dynamic-card:hover .image-canvas img {
-            transform: scale(1.08);
-        }
-
-        /* شارة التصنيف المتوهجة نيونيًا */
+        /* 2. وضع التصنيف مباشرة تحت الصورة */
         .category-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(10, 11, 16, 0.75);
-            border: 1px solid var(--neon-mint);
-            color: var(--neon-mint);
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(0, 245, 214, 0.2);
-            z-index: 2;
+            display: inline-block;
+            align-self: flex-start;
+            margin: 15px 15px 5px 15px;
+            background: rgba(255, 85, 0, 0.1);
+            border: 1px solid var(--neon-orange);
+            color: var(--neon-orange);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
         }
 
-        /* تفاصيل ومحتوى الكارت الاستراتيجي */
+        /* 3. الداتات والتفاصيل تحتها بالترتيب */
         .card-details {
-            padding: 25px;
+            padding: 0 15px 15px 15px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
         }
 
         .card-details h3 {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            margin: 0 0 12px 0;
+            margin-bottom: 8px;
             color: var(--text-primary);
-            letter-spacing: -0.5px;
-            text-align: right; /* المحاذاة العربية للمنتجات بالداخل لسهولة القراءة */
+            line-height: 1.4;
+        }
+
+        .card-details .product-code {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .card-details p {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            margin: 0 0 20px 0;
-            line-height: 1.6;
-            text-align: right;
+            margin-bottom: 15px;
+            line-height: 1.5;
             flex-grow: 1;
         }
 
-        /* نظام تسعير وتفعيل النيون والميتا */
         .meta-pricing {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid var(--glass-border);
-            padding-top: 15px;
+            padding-top: 12px;
             margin-top: auto;
-            direction: rtl;
+        }
+
+        .price-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
 
         .price-tag {
-            font-size: 1.6rem;
+            font-size: 1.3rem;
             font-weight: 800;
-            color: var(--neon-pink);
-            text-shadow: 0 0 15px rgba(255, 42, 95, 0.3);
+            color: #ff2a5f;
         }
 
         .currency {
-            font-size: 0.85rem;
-            font-weight: 400;
+            font-size: 0.75rem;
+            font-weight: normal;
+            margin-right: 3px;
             color: var(--text-secondary);
-            margin-right: 5px;
         }
 
-        /* الزرار الاحترافي الفوري للطلب الفوري المباشر بلمسة نيون ومؤثرات وميض */
         .neon-order-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 8px;
             background: linear-gradient(135deg, #00f5d4 0%, #00bfa5 100%);
             color: #050608;
             text-decoration: none;
-            padding: 14px;
-            border-radius: 14px;
+            padding: 10px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 1.05rem;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(0, 245, 214, 0.3);
-            cursor: pointer;
-            direction: rtl;
+            font-size: 0.95rem;
+            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(0, 245, 214, 0.2);
         }
 
         .neon-order-btn:hover {
-            box-shadow: 0 0 25px rgba(0, 245, 214, 0.6);
-            transform: translateY(-2px);
+            box-shadow: 0 0 18px rgba(0, 245, 214, 0.5);
+            transform: translateY(-1px);
         }
 
-        /* واجهة تحميل هيكلية فائقة السلسلة (Shimmer Skeleton Loader) */
+        /* نافذة المودال المنبثقة للأدمن والتسجيل */
+        .admin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .admin-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .close-modal {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: var(--neon-orange);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'Tajawal', sans-serif;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--neon-orange);
+        }
+
+        /* لوحة التحكم الخاصة برفع الإكسيل بعد تسجيل الدخول للمسؤول */
+        .upload-panel {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .file-drop-zone {
+            border: 2px dashed var(--glass-border);
+            padding: 30px;
+            border-radius: 12px;
+            background: var(--input-bg);
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .file-drop-zone:hover {
+            border-color: var(--neon-orange);
+        }
+
         .skeleton-loader {
             text-align: center;
             grid-column: 1 / -1;
             padding: 80px;
             color: var(--text-secondary);
             font-size: 1.2rem;
-            font-weight: 300;
         }
 
         .skeleton-loader i {
-            color: var(--neon-pink);
+            color: var(--neon-orange);
             margin-bottom: 15px;
-            text-shadow: 0 0 15px var(--neon-pink);
         }
+
+        /* الاستجابة ومرونة الشاشات (Responsive Grid) */
+        @media (max-width: 1400px) { .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+        @media (max-width: 1100px) { .catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (max-width: 768px) {
+            .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+            .search-filter-container { flex-direction: column; gap: 10px; }
+            .showcase-header h1 { font-size: 2.3rem; }
+        }
+        @media (max-width: 480px) { .catalog-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); } }
     </style>
 </head>
 <body>
 
-    <!-- الهيدر الرقمي للماركة السايبيربرانك -->
-    <div class="showcase-header">
-        <h1>NEXT-GEN POS CATALOG</h1>
-        <p>استمتع بتجربة تصفح تفاعلية ثلاثية الأبعاد واطلب منتجاتك فوراً وبسلاسة تامة</p>
+    <!-- شريط التحكم العلوي -->
+    <div class="top-navbar">
+        <button class="action-btn" id="theme-toggle" onclick="toggleThemeMode()">
+            <i class="fas fa-moon"></i> <span>الوضع الداكن</span>
+        </button>
+        <div class="nav-actions">
+            <button class="action-btn" onclick="openAdminGateway()">
+                <i class="fas fa-user-shield"></i> أدمن
+            </button>
+        </div>
     </div>
 
-    <!-- شبكة عرض المنتجات بنظام البيانات الحية الذكي والسريع -->
+    <!-- الهيدر النيوني المضيء المحدث والمتحرك برتقالي/أسود -->
+    <div class="showcase-header">
+        <h1 class="neon-title">اوفرلك - كتالوج</h1>
+    </div>
+
+    <!-- عناصر البحث والفلترة الذكية المصممة في أعلى الصفحة -->
+    <div class="search-filter-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="catalogSearchInput" placeholder="ابحث عن اسم منتج أو كود معين..." oninput="triggerLiveSearchFilter()">
+        </div>
+        <div class="filter-box">
+            <select id="categorySelectorDropdown" onchange="triggerLiveSearchFilter()">
+                <option value="ALL">عرض كل التصنيفات</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- شبكة عرض المنتجات الفائقة (خماسية التوزيع) -->
     <div class="catalog-grid" id="catalog-container">
         <div class="skeleton-loader">
-            <i class="fas fa-bolt fa-3x fa-spin"></i>
-            <div>جاري الاتصال بقاعدة البيانات ومزامنة لوحة النيون...</div>
+            <i class="fas fa-circle-notch fa-3x fa-spin"></i>
+            <div>جاري تحميل المنتجات وتأمين الإتصال السريع...</div>
+        </div>
+    </div>
+
+    <!-- نافذة الأدمن المنبثقة للمصادقة وتعديل ورفع شيت الإكسيل يومياً -->
+    <div class="admin-modal" id="adminAuthWindow">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeAdminGateway()"><i class="fas fa-times"></i></button>
+            
+            <!-- نموذج تسجيل الدخول -->
+            <div id="loginFormSection">
+                <h2>تسجيل دخول الإدارة</h2>
+                <div class="form-group">
+                    <label>اسم المستخدم (User)</label>
+                    <input type="text" id="adminUserField" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور (Password)</label>
+                    <input type="password" id="adminPasswordField" placeholder="Password">
+                </div>
+                <button class="neon-order-btn" style="width:100%; margin-top:10px;" onclick="validateAdminCredentials()">دخول</button>
+            </div>
+
+            <!-- واجهة رفع ملف الإكسيل المخصصة للمسؤول بعد المصادقة بنجاح -->
+            <div id="adminActionSection" class="upload-panel">
+                <h2>لوحة تحديث البيانات اليومية</h2>
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:15px;">
+                    قم برفع ملف الـ Excel المحدث بنفس الترتيب ليتم مزامنته تلقائياً مع شيت جوجل (جدول Password)
+                </p>
+                <div class="file-drop-zone" onclick="document.getElementById('excelFileInput').click()">
+                    <i class="fas fa-file-excel fa-3x" style="color: #27ae60; margin-bottom: 10px;"></i>
+                    <div>اضغط هنا لرفع ملف كشيت إكسيل</div>
+                    <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display:none;" onchange="handleExcelFileUpload(event)">
+                </div>
+                <div id="uploadStatusMessage" style="font-size:0.9rem; font-weight:700; margin-top:10px;"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        // ==================== لوحة التحكم والربط الديناميكي السريع ====================
-        
-        // 1. تم وضع رابط الـ Web App المأخوذ من الـ Apps Script هنا بنجاح:
+        // ==================== إعدادات الربط والتحكم الذكي بمصادر البيانات ====================
         const sheetWebUrl = "https://script.google.com/macros/s/AKfycby8PaW4rTRez_rd4HM8HsqkPGlUOO22FbFRtubDf4tBdovHb5m7SEJJnnT1a8CQeeS7NA/exec";
-        
-        // 2. اكتب رقم هاتفك هنا لاستقبال الطلبات الفورية مباشرة (بدون علامة +):
         const phoneNumber = "201000000000"; 
+        
+        let localProductsMasterArray = []; // المخزن المحلي لحفظ المنتجات لسرعة الفلترة بدون طلبات متكررة
 
-        // ===========================================================================
-
-        async function initializePremiumCatalog() {
-            const container = document.getElementById('catalog-container');
+        // دالة تبديل الثيم السريع (Light / Dark)
+        function toggleThemeMode() {
+            const body = document.body;
+            const btn = document.getElementById('theme-toggle');
+            body.classList.toggle('light-theme');
             
-            try {
-                const response = await fetch(sheetWebUrl);
-                const products = await response.json();
-                
-                if (!products || products.length === 0) {
-                    container.innerHTML = '<div class="skeleton-loader">لم نجد أي منتجات معروضة بجدول البيانات حالياً.</div>';
-                    return;
-                }
-                
-                container.innerHTML = ''; // تصفير واجهة التحميل وبدء الرسم الاحترافي الفوري
-                
-                products.forEach(product => {
-                    const whatsappMessage = `مرحباً، أريد طلب هذا المنتج الفاخر من خلال الكتالوج الذكي:\n\n📦 المنتج: ${product.title}\n💰 السعر: ${product.price} EGP\n\nبرجاء تأكيد الطلب لتجهيز الشحن الفوري الحصري.`;
-                    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
-                    
-                    const cardHTML = `
-                        <div class="dynamic-card">
-                            <span class="category-badge">${product.category || 'Premium'}</span>
-                            <div class="image-canvas">
-                                <img src="${product.image || 'https://via.placeholder.com/400x300/161925/ffffff?text=Product+Image'}" alt="${product.title}" loading="lazy">
-                            </div>
-                            <div class="card-details">
-                                <h3>${product.title}</h3>
-                                <p>${product.description || 'وصف حصري ومميز معد ومصمم خصيصاً لاستعراض كفاءة وجودة تفاصيل هذا المنتج الفريد.'}</p>
-                                <div class="meta-pricing">
-                                    <div class="price-tag">
-                                        ${product.price}<span class="currency">EGP</span>
-                                    </div>
-                                </div>
-                                <a href="${whatsappUrl}" target="_blank" class="neon-order-btn">
-                                    <i class="fab fa-whatsapp fa-lg"></i> إرسال أمر الشراء الفوري
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                    container.innerHTML += cardHTML;
-                });
-                
-            } catch (error) {
-                console.error("خطأ ربط ومزامنة الـ API بنظام الكتالوج ثلاثي الأبعاد:", error);
-                container.innerHTML = '<div class="skeleton-loader" style="color: var(--neon-pink);">فشل الربط التلقائي، يرجى التحقق من كود الـ Web App وصلاحية الرابط (Anyone).</div>';
+            if(body.classList.contains('light-theme')) {
+                btn.innerHTML = `<i class="fas fa-sun"></i> <span>الوضع المضيء</span>`;
+            } else {
+                btn.innerHTML = `<i class="fas fa-moon"></i> <span>الوضع الداكن</span>`;
             }
         }
 
-        // تشغيل المحرك فورا للتصفح فائق السرعة
-        if (sheetWebUrl !== "ضع_رابط_الـ_WEB_APP_هنا") {
-            initializePremiumCatalog();
+        // جلب المنتجات وبناء عناصر الفلترة والشبكة فوراً عند التحميل
+        async function fetchAndRenderCatalog() {
+            const container = document.getElementById('catalog-container');
+            try {
+                const response = await fetch(sheetWebUrl);
+                localProductsMasterArray = await response.json();
+                
+                if (!localProductsMasterArray || localProductsMasterArray.length === 0) {
+                    container.innerHTML = '<div class="skeleton-loader">لم نجد أي منتجات معروضة حالياً في جدول البيانات.</div>';
+                    return;
+                }
+                
+                // استخراج وبناء قائمة التصنيفات الفريدة ديناميكياً لتغذية الـ Dropdown
+                const categorySelector = document.getElementById('categorySelectorDropdown');
+                const categories = new Set();
+                localProductsMasterArray.forEach(p => { if(p.category) categories.add(p.category); });
+                
+                // تصفير الخيارات الإضافية مع ترك الخيار الافتراضي الأرشد
+                categorySelector.innerHTML = '<option value="ALL">عرض كل التصنيفات</option>';
+                categories.forEach(cat => {
+                    categorySelector.innerHTML += `<option value="${cat}">${cat}</option>`;
+                });
+
+                // تفعيل معالجة ورسم الكروت على الشاشة فوراً
+                renderCatalogGrid(localProductsMasterArray);
+
+            } catch (error) {
+                console.error("خطأ ربط ومزامنة الـ API بنظام الكتالوج:", error);
+                container.innerHTML = '<div class="skeleton-loader" style="color: var(--neon-orange);">فشل الربط التلقائي، يرجى التحقق من صلاحيات الـ Web App.</div>';
+            }
         }
+
+        // محرك رسم بناء كروت المنتجات بهندسة التصميم الجديدة (الصورة -> التصنيف -> البيانات)
+        function renderCatalogGrid(productsList) {
+            const container = document.getElementById('catalog-container');
+            container.innerHTML = ''; 
+
+            productsList.forEach(product => {
+                const whatsappMessage = `مرحباً، أريد طلب هذا المنتج من خلال الكتالوج:\n\n📦 المنتج: ${product.title}\n🔢 الكود: ${product.code || 'N/A'}\n💰 السعر: ${product.price} EGP`;
+                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+                
+                const cardHTML = `
+                    <div class="dynamic-card">
+                        <!-- 1. الصورة ف وسط وأعلى الكارت -->
+                        <div class="image-canvas">
+                            <img src="${product.image || 'https://via.placeholder.com/400x300/161925/ffffff?text=No+Image'}" alt="${product.title}" loading="lazy">
+                        </div>
+                        
+                        <!-- 2. تحته التصنيف بتاعه مباشرة -->
+                        <span class="category-badge">${product.category || 'عام'}</span>
+                        
+                        <!-- 3. الداتات والتفاصيل تحتها -->
+                        <div class="card-details">
+                            <h3>${product.title}</h3>
+                            ${product.code ? `<div class="product-code">كود: ${product.code}</div>` : ''}
+                            <p>${product.description || 'وصف تفصيلي مميز يستعرض جودة وكفاءة مواصفات هذا المنتج الحصري الفاخر.'}</p>
+                            
+                            <div class="meta-pricing">
+                                <span class="price-label">سعر القطعة</span>
+                                <div class="price-tag">
+                                    ${product.price}<span class="currency">EGP</span>
+                                </div>
+                            </div>
+                            
+                            <a href="${whatsappUrl}" target="_blank" class="neon-order-btn">
+                                <i class="fab fa-whatsapp fa-lg"></i> إرسال طلب الشراء
+                            </a>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+        // نظام البحث والفلترة اللحظي الفائق بدون بطء في الاستجابة لقراءة المدخلات
+        function triggerLiveSearchFilter() {
+            const searchQuery = document.getElementById('catalogSearchInput').value.toLowerCase().trim();
+            const selectedCategory = document.getElementById('categorySelectorDropdown').value;
+
+            const filteredResults = localProductsMasterArray.filter(product => {
+                const matchesSearch = product.title.toLowerCase().includes(searchQuery) || 
+                                      (product.code && product.code.toLowerCase().includes(searchQuery)) ||
+                                      (product.description && product.description.toLowerCase().includes(searchQuery));
+                
+                const matchesCategory = (selectedCategory === 'ALL') || (product.category === selectedCategory);
+
+                return matchesSearch && matchesCategory;
+            });
+
+            renderCatalogGrid(filteredResults);
+        }
+
+        // ==================== إدارة بوابة الأدمن والمصادقة لرفع شيت الإكسيل ====================
+        function openAdminGateway() {
+            document.getElementById('adminAuthWindow').classList.add('active');
+        }
+
+        function closeAdminGateway() {
+            document.getElementById('adminAuthWindow').classList.remove('active');
+        }
+
+        // إرسال التحقق من الهوية والبيانات إلى الـ Apps Script بالاعتماد على التسميات المحددة بشيت Password
+        async function validateAdminCredentials() {
+            const user = document.getElementById('adminUserField').value;
+            const pass = document.getElementById('adminPasswordField').value;
+            const statusMsg = document.getElementById('uploadStatusMessage');
+
+            if(!user || !pass) {
+                alert("برجاء إدخال اسم المستخدم وكلمة المرور أولاً!");
+                return;
+            }
+
+            try {
+                // نرسل طلب مصادقة إلى الـ Web App الخاص بك
+                const response = await fetch(sheetWebUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'loginVerification',
+                        username: user,
+                        password: pass
+                    })
+                });
+                
+                const authResult = await response.json();
+
+                if(authResult.status === "success" || authResult.authorized === true) {
+                    // إذا نجحت المصادقة نخفي نموذج تسجيل الدخول ونعرض لوحة الرفع المباشر للملف
+                    document.getElementById('loginFormSection').style.display = 'none';
+                    document.getElementById('adminActionSection').style.display = 'block';
+                } else {
+                    alert("بيانات الاعتماد غير صحيحة! يرجى مراجعة شيت Password.");
+                }
+            } catch (err) {
+                // محاكاة احتياطية للتطوير في حالة رغبتك في تشغيلها محلياً قبل ربط الـ POST
+                console.error("حدث خطأ أثناء الاتصال بالخادم للمصادقة: ", err);
+                alert("لم يتم إعداد كود الاستقبال POST بالـ Web App بعد، لكن تم فتح لوحة التحكم للمتابعة.");
+                document.getElementById('loginFormSection').style.display = 'none';
+                document.getElementById('adminActionSection').style.display = 'block';
+            }
+        }
+
+        // دالة معالجة وقراءة وتحويل شيت الإكسيل المرفوع مباشرة فوراً
+        function handleExcelFileUpload(event) {
+            const file = event.target.files[0];
+            const statusZone = document.getElementById('uploadStatusMessage');
+            
+            if (!file) return;
+
+            statusZone.style.color = "var(--text-primary)";
+            statusZone.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري قراءة وتفكيك ملف الإكسيل...`;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // تحويل الشيت الأول داخل ملف الإكسيل إلى مصفوفة JSON
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const excelParsedRows = XLSX.utils.sheet_to_json(worksheet);
+
+                    if(excelParsedRows.length === 0) {
+                        statusZone.style.color = "#ff2a5f";
+                        statusZone.innerHTML = "الملف المرفوع فارغ أو غير صالح!";
+                        return;
+                    }
+
+                    statusZone.innerHTML = `<i class="fas fa-cloud-upload-alt fa-spin"></i> جاري نقل وجدولة البيانات لشيت جوجل مباشر...`;
+
+                    // إرسال البيانات المفككة بالكامل فوراً للـ Web App لتحديث جدول البيانات الأصلي بنفس الترتيب
+                    const uploadResponse = await fetch(sheetWebUrl, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            action: 'bulkDataUpdate',
+                            productsData: excelParsedRows
+                        })
+                    });
+
+                    const syncResult = await uploadResponse.json();
+
+                    if(syncResult.status === "success") {
+                        statusZone.style.color = "#00f5d4";
+                        statusZone.innerHTML = `<i class="fas fa-check-circle"></i> تم رفع الأصناف بنجاح وتحديث شيت جوجل!`;
+                        // إعادة جلب البيانات لتحديث الواجهة تلقائياً بالبيانات المرفوعة حديثاً
+                        fetchAndRenderCatalog();
+                    } else {
+                        statusZone.style.color = "#ff2a5f";
+                        statusZone.innerHTML = "فشل تحديث الأصناف على السيرفر الأساسي.";
+                    }
+
+                } catch (error) {
+                    console.error("خطأ معالجة الإكسيل والرفع:", error);
+                    statusZone.style.color = "#ff5500";
+                    statusZone.innerHTML = "حدث خطأ أثناء معالجة ونقل ملف الـ Excel.";
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+        // بدء تشغيل محرك الكتالوج فور تحميل الصفحة بالكامل
+        document.addEventListener("DOMContentLoaded", fetchAndRenderCatalog);
     </script>
 </body>
 </html>
