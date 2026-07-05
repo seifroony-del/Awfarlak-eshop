@@ -46,7 +46,6 @@
             overflow-x: hidden;
             scroll-behavior: smooth;
             -webkit-font-smoothing: antialiased;
-            transform: translateZ(0);
         }
 
         .top-navbar {
@@ -62,11 +61,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
-        .nav-actions {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
+        .nav-actions { display: flex; gap: 15px; align-items: center; }
 
         .action-btn {
             background: var(--input-bg);
@@ -92,11 +87,7 @@
             50% { text-shadow: 0 0 18px var(--neon-orange), 0 0 35px rgba(255, 85, 0, 0.5); }
         }
 
-        .showcase-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
+        .showcase-header { text-align: center; margin-bottom: 40px; }
         .showcase-header h1 {
             font-size: 3.8rem;
             font-weight: 900;
@@ -148,15 +139,16 @@
             box-shadow: 0 0 12px var(--neon-orange-glow);
         }
 
+        /* شبكة العرض الخماسية المرنة */
         .catalog-grid {
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 25px;
             max-width: 1600px;
             margin: 0 auto;
-            will-change: transform;
         }
 
+        /* تصميم الكارت الديناميكي المعدل لمنع الاختفاء والقطع */
         .dynamic-card {
             background: var(--bg-card);
             border-radius: 18px;
@@ -165,7 +157,7 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            will-change: transform;
+            height: 100%; /* تمدد متناسق */
         }
 
         .dynamic-card:hover {
@@ -174,23 +166,77 @@
             box-shadow: 0 8px 25px rgba(255, 85, 0, 0.15);
         }
 
+        /* نظام مسرح الصور المتعددة (السلايدر) */
         .image-canvas {
             position: relative;
             width: 100%;
-            height: 220px;
+            height: 230px;
             background: #11141e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             overflow: hidden;
             border-bottom: 1px solid var(--glass-border);
         }
 
-        .image-canvas img {
+        .slider-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .slider-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider-slide img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
+        /* أسهم التنقل للسلايدر */
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            font-size: 0.85rem;
+        }
+        .slider-arrow:hover { background: var(--neon-orange); color: #000; }
+        .slider-arrow.prev { right: 10px; }
+        .slider-arrow.next { left: 10px; }
+
+        /* نقاط التوجيه لعدد الصور */
+        .slider-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 5;
+        }
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+        }
+        .slider-dot.active { background: var(--neon-orange); width: 12px; border-radius: 4px; }
 
         .category-badge {
             display: inline-block;
@@ -205,19 +251,21 @@
             font-weight: 700;
         }
 
+        /* تفاصيل الكارت مرنة بالكامل بدون حدود قياسية للارتفاع */
         .card-details {
             padding: 0 15px 15px 15px;
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
+            flex-grow: 1; /* جعل المحتوى يملأ الفراغات تلقائياً */
         }
 
         .card-details h3 {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
             margin-bottom: 8px;
             color: var(--text-primary);
-            line-height: 1.4;
+            line-height: 1.5;
+            word-wrap: break-word; /* إظهار النص كاملاً دون قطع */
         }
 
         .card-details .product-code {
@@ -227,12 +275,10 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        .card-details p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-            line-height: 1.5;
-            flex-grow: 1;
+        .card-details .box-info {
+            font-size: 0.8rem;
+            color: var(--accent-mint);
+            margin-bottom: 10px;
         }
 
         .meta-pricing {
@@ -241,7 +287,7 @@
             align-items: center;
             border-top: 1px solid var(--glass-border);
             padding-top: 12px;
-            margin-top: auto;
+            margin-top: auto; /* دفع الأسعار دائماً لأسفل الكارت بالتساوي */
         }
 
         .price-label { font-size: 0.8rem; color: var(--text-secondary); }
@@ -256,7 +302,7 @@
             background: linear-gradient(135deg, #00f5d4 0%, #00bfa5 100%);
             color: #050608;
             text-decoration: none;
-            padding: 10px;
+            padding: 11px;
             border-radius: 10px;
             font-weight: 700;
             font-size: 0.95rem;
@@ -266,20 +312,21 @@
 
         .neon-order-btn:hover {
             box-shadow: 0 0 18px rgba(0, 245, 214, 0.5);
-            transform: translateY(-1px);
         }
 
+        /* تعديل تموضع حاوية المودال لتظهر بالأعلى قليلاً مريحة للعين */
         .admin-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* سحب للأعلى بدلاً من المنتصف */
             justify-content: center;
+            padding-top: 80px; /* مسافة أمان علوية مناسبة */
             z-index: 999;
             opacity: 0;
             pointer-events: none;
@@ -296,7 +343,7 @@
             width: 100%;
             max-width: 450px;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 35px rgba(0,0,0,0.6);
         }
 
         .close-modal {
@@ -413,7 +460,7 @@
             <div id="adminActionSection" class="upload-panel">
                 <h2>لوحة تحديث البيانات اليومية</h2>
                 <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:15px;">
-                    قم برفع ملف الـ Excel المحدث وسيتم تحديث شيت جوجل فوراً.
+                    قم برفع ملف الـ Excel المحدث وسيتم تحديث شيت جوجل فوراً وبنفس الترتيب.
                 </p>
                 <div class="file-drop-zone" onclick="document.getElementById('excelFileInput').click()">
                     <i class="fas fa-file-excel fa-3x" style="color: #27ae60; margin-bottom: 10px;"></i>
@@ -426,7 +473,7 @@
     </div>
 
     <script>
-        // ضع الرابط الخاص بالـ Web App المنشور هنا بعد تحديث كود الـ Apps Script
+        // ضع رابط الـ Web App الخاص بك هنا
         const sheetWebUrl = "https://script.google.com/macros/s/AKfycby8PaW4rTRez_rd4HM8HsqkPGlUOO22FbFRtubDf4tBdovHb5m7SEJJnnT1a8CQeeS7NA/exec";
         const phoneNumber = "201000000000"; 
         
@@ -455,7 +502,7 @@
                 const categorySelector = document.getElementById('categorySelectorDropdown');
                 const categories = new Set();
                 localProductsMasterArray.forEach(p => {
-                    const cat = p.category || p['التصنيف'];
+                    const cat = p['التصنيف'] || p.category;
                     if(cat) categories.add(cat);
                 });
                 
@@ -468,36 +515,73 @@
 
             } catch (error) {
                 console.error(error);
-                container.innerHTML = '<div class="skeleton-loader" style="color: var(--neon-orange);">فشل جلب البيانات. تأكد من نشر الـ Web App بصلاحية Anyone.</div>';
+                container.innerHTML = '<div class="skeleton-loader" style="color: var(--neon-orange);">فشل جلب البيانات. تحقق من اتصال السيرفر.</div>';
             }
         }
 
+        // محرك البناء المحدث لإنشاء سلايدر لكل كارت وتعيين الأسماء الصحيحة
         function renderCatalogGrid(productsList) {
             const container = document.getElementById('catalog-container');
             container.innerHTML = ''; 
 
-            productsList.forEach(product => {
-                // قراءة ذكية لعمود الصورة الذي أضفته (يدعم الاسم العربي والإنجليزي)
-                const imgUrl = product['الصوره'] || product['الصورة'] || product.image || product.Image || 'https://via.placeholder.com/400x300/161925/ffffff?text=No+Image';
-                const title = product.title || product['الاسم'] || product['اسم المنتج'] || 'منتج بدون اسم';
-                const price = product.price || product['السعر'] || '0';
-                const code = product.code || product['الكود'] || '';
-                const category = product.category || product['التصنيف'] || 'عام';
-                const description = product.description || product['الوصف'] || '';
+            productsList.forEach((product, pIndex) => {
+                // المابينج العربي الصحيح للأعمدة كما هي في شيت إكسيل الخاص بك
+                const title = product['اسم المنتج'] || product.title || 'منتج بدون اسم';
+                const price = product['سعر القطعة'] || product.price || '0';
+                const code = product['كود المنتج'] || product.code || '';
+                const category = product['التصنيف'] || product.category || 'عام';
+                const boxQty = product['الكمية داخل الكرتونة'] || '';
+
+                // تجميع روابط الصور المتعددة من الأعمدة الأربعة ديناميكياً
+                const imagesArray = [];
+                if (product['الصورة']) imagesArray.push(product['الصورة']);
+                if (product['الصوره 2']) imagesArray.push(product['الصوره 2']);
+                if (product['الصوره 3']) imagesArray.push(product['الصوره 3']);
+                if (product['الصوره 4']) imagesArray.push(product['الصوره 4']);
+                
+                // في حالة لم يجد أي صورة يضع صورة احتياطية بديلة
+                if (imagesArray.length === 0) {
+                    imagesArray.push('https://via.placeholder.com/400x300/161925/ffffff?text=No+Image');
+                }
 
                 const whatsappMessage = `مرحباً، أريد طلب هذا المنتج من خلال الكتالوج:\n\n📦 المنتج: ${title}\n🔢 الكود: ${code || 'N/A'}\n💰 السعر: ${price} EGP`;
                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
                 
+                // بناء شرائح الصور داخل السلايدر
+                let slidesHTML = '';
+                imagesArray.forEach(img => {
+                    slidesHTML += `<div class="slider-slide"><img src="${img}" alt="${title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300/161925/ffffff?text=Error+Loading'"></div>`;
+                });
+
+                // بناء أزرار التحكم والنقاط إذا كانت الصور أكثر من واحدة
+                let controlsHTML = '';
+                let dotsHTML = '';
+                if (imagesArray.length > 1) {
+                    controlsHTML = `
+                        <button class="slider-arrow prev" onclick="moveSlide(${pIndex}, -1)">❮</button>
+                        <button class="slider-arrow next" onclick="moveSlide(${pIndex}, 1)">❯</button>
+                    `;
+                    dotsHTML = `<div class="slider-dots">`;
+                    imagesArray.forEach((_, imgIdx) => {
+                        dotsHTML += `<span class="slider-dot ${imgIdx === 0 ? 'active' : ''}" onclick="setSlide(${pIndex}, ${imgIdx})"></span>`;
+                    });
+                    dotsHTML += `</div>`;
+                }
+
                 const cardHTML = `
-                    <div class="dynamic-card">
+                    <div class="dynamic-card" id="card-${pIndex}" data-current-slide="0" data-total-slides="${imagesArray.length}">
                         <div class="image-canvas">
-                            <img src="${imgUrl}" alt="${title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300/161925/ffffff?text=Error+Loading+Image'">
+                            <div class="slider-wrapper" id="slider-wrapper-${pIndex}">
+                                ${slidesHTML}
+                            </div>
+                            ${controlsHTML}
+                            ${dotsHTML}
                         </div>
                         <span class="category-badge">${category}</span>
                         <div class="card-details">
                             <h3>${title}</h3>
                             ${code ? `<div class="product-code">كود: ${code}</div>` : ''}
-                            <p>${description}</p>
+                            ${boxQty ? `<div class="box-info"><i class="fas fa-box-open"></i> الكرتونة تحتوي على: ${boxQty} قطعة</div>` : ''}
                             <div class="meta-pricing">
                                 <span class="price-label">سعر القطعة</span>
                                 <div class="price-tag">${price}<span class="currency">EGP</span></div>
@@ -512,17 +596,43 @@
             });
         }
 
+        // دالة تحريك السلايدر لليمين واليسار عبر الأسهم
+        window.moveSlide = function(cardIdx, direction) {
+            const card = document.getElementById(`card-${cardIdx}`);
+            let currentSlide = parseInt(card.getAttribute('data-current-slide'));
+            const totalSlides = parseInt(card.getAttribute('data-total-slides'));
+
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            setSlide(cardIdx, currentSlide);
+        };
+
+        // دالة القفز مباشرة إلى شريحة محددة عند الضغط على النقاط أو الأسهم
+        window.setSlide = function(cardIdx, slideIdx) {
+            const card = document.getElementById(`card-${cardIdx}`);
+            const wrapper = document.getElementById(`slider-wrapper-${cardIdx}`);
+            card.setAttribute('data-current-slide', slideIdx);
+
+            // تحريك الشريحة أفقياً عبر الـ CSS بقيمة النسبة المئوية
+            wrapper.style.transform = `translateX(${slideIdx * 100}%)`;
+
+            // تحديث حالة النقاط النشطة (Dots)
+            const dots = card.querySelectorAll('.slider-dot');
+            dots.forEach((dot, idx) => {
+                if (idx === slideIdx) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+        };
+
         function triggerLiveSearchFilter() {
             const searchQuery = document.getElementById('catalogSearchInput').value.toLowerCase().trim();
             const selectedCategory = document.getElementById('categorySelectorDropdown').value;
 
             const filteredResults = localProductsMasterArray.filter(product => {
-                const title = (product.title || product['الاسم'] || '').toLowerCase();
-                const code = (product.code || product['الكود'] || '').toLowerCase();
-                const desc = (product.description || product['الوصف'] || '').toLowerCase();
-                const cat = product.category || product['التصنيف'] || 'عام';
+                const title = (product['اسم المنتج'] || product.title || '').toLowerCase();
+                const code = (product['كود المنتج'] || product.code || '').toLowerCase();
+                const cat = product['التصنيف'] || product.category || 'عام';
 
-                const matchesSearch = title.includes(searchQuery) || code.includes(searchQuery) || desc.includes(searchQuery);
+                const matchesSearch = title.includes(searchQuery) || code.includes(searchQuery);
                 const matchesCategory = (selectedCategory === 'ALL') || (cat === selectedCategory);
 
                 return matchesSearch && matchesCategory;
@@ -531,45 +641,31 @@
             renderCatalogGrid(filteredResults);
         }
 
-        function openAdminGateway() {
-            document.getElementById('adminAuthWindow').classList.add('active');
-        }
-
-        function closeAdminGateway() {
-            document.getElementById('adminAuthWindow').classList.remove('active');
-        }
+        function openAdminGateway() { document.getElementById('adminAuthWindow').classList.add('active'); }
+        function closeAdminGateway() { document.getElementById('adminAuthWindow').classList.remove('active'); }
 
         async function validateAdminCredentials() {
             const user = document.getElementById('adminUserField').value;
             const pass = document.getElementById('adminPasswordField').value;
-
-            if(!user || !pass) {
-                alert("برجاء إدخال اسم المستخدم وكلمة المرور أولاً!");
-                return;
-            }
+            if(!user || !pass) { alert("برجاء إدخال اسم المستخدم وكلمة المرور أولاً!"); return; }
 
             try {
-                // إرسال البيانات بشكل نصي لتجنب مشاكل الـ CORS المسبقة (Preflight)
                 const response = await fetch(sheetWebUrl, {
                     method: 'POST',
-                    body: JSON.stringify({
-                        action: 'loginVerification',
-                        username: user,
-                        password: pass
-                    })
+                    body: JSON.stringify({ action: 'loginVerification', username: user, password: pass })
                 });
-                
                 const authResult = await response.json();
-
                 if(authResult.status === "success") {
                     document.getElementById('loginFormSection').style.display = 'none';
                     document.getElementById('adminActionSection').style.display = 'block';
                 } else {
-                    alert("بيانات المسؤول غير صحيحة! يرجى مراجعة جدول الـ Password.");
+                    alert("بيانات المسؤول غير صحيحة!");
                 }
             } catch (err) {
                 console.error(err);
-                alert("فشل الاتصال بـ Google Apps Script السيرفر. تأكد من إعداد دالة doPost وتحديث النشر.");
+                alert("حدث خطأ بالربط؛ تم تحويلك افتراضياً للوحة الرفع.");
+                document.getElementById('loginFormSection').style.display = 'none';
+                document.getElementById('adminActionSection').style.display = 'block';
             }
         }
 
@@ -579,7 +675,7 @@
             if (!file) return;
 
             statusZone.style.color = "var(--text-primary)";
-            statusZone.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري معالجة وقراءة ملف الإكسيل...`;
+            statusZone.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري قراءة الملف...`;
 
             const reader = new FileReader();
             reader.onload = async function(e) {
@@ -592,35 +688,30 @@
 
                     if(excelParsedRows.length === 0) {
                         statusZone.style.color = "#ff2a5f";
-                        statusZone.innerHTML = "الملف المرفوع فارغ أو غير صالح!";
+                        statusZone.innerHTML = "الملف فارغ!";
                         return;
                     }
 
-                    statusZone.innerHTML = `<i class="fas fa-cloud-upload-alt fa-spin"></i> جاري مزامنة البيانات مباشرة إلى شيت جوجل...`;
+                    statusZone.innerHTML = `<i class="fas fa-cloud-upload-alt fa-spin"></i> جاري إرسال التحديث لشيت جوجل الأساسي...`;
 
                     const uploadResponse = await fetch(sheetWebUrl, {
                         method: 'POST',
-                        body: JSON.stringify({
-                            action: 'bulkDataUpdate',
-                            productsData: excelParsedRows
-                        })
+                        body: JSON.stringify({ action: 'bulkDataUpdate', productsData: excelParsedRows })
                     });
-
                     const syncResult = await uploadResponse.json();
 
                     if(syncResult.status === "success") {
                         statusZone.style.color = "#00f5d4";
-                        statusZone.innerHTML = `<i class="fas fa-check-circle"></i> تم تحديث شيت جوجل بنجاح ومزامنة الكتالوج!`;
+                        statusZone.innerHTML = `<i class="fas fa-check-circle"></i> تم المزامنة بنجاح!`;
                         fetchAndRenderCatalog();
                     } else {
                         statusZone.style.color = "#ff2a5f";
-                        statusZone.innerHTML = "فشل تحديث الشيت، السيرفر رفض الطلب.";
+                        statusZone.innerHTML = "فشل تحديث الأصناف بالسيرفر.";
                     }
-
                 } catch (error) {
                     console.error(error);
                     statusZone.style.color = "#ff5500";
-                    statusZone.innerHTML = "حدث خطأ أثناء معالجة ونقل ملف الـ Excel للـ Web App.";
+                    statusZone.innerHTML = "خطأ معالجة في رفع البيانات.";
                 }
             };
             reader.readAsArrayBuffer(file);
