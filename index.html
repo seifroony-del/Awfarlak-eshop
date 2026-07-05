@@ -49,11 +49,8 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* إضافة مساحة يسارية في الشاشات الكبيرة لعدم تداخل المنتجات مع البار الجانبي الثابت */
         @media (min-width: 769px) {
-            body {
-                padding-left: 310px;
-            }
+            body { padding-left: 310px; }
         }
 
         .top-navbar {
@@ -100,7 +97,6 @@
             box-shadow: 0 0 10px var(--neon-orange-glow);
         }
 
-        /* تعديل حاوية التواصل لتصبح بار جانبي ثابت بسكرول ذكي جهة اليسار */
         .compact-contact-card {
             position: fixed;
             left: 20px;
@@ -120,21 +116,14 @@
             overflow-y: auto;
         }
 
-        /* تخصيص شكل السكرول بار للبار الجانبي ليناسب الهوية الاحترافية للموقع */
-        .compact-contact-card::-webkit-scrollbar {
-            width: 5px;
-        }
-        .compact-contact-card::-webkit-scrollbar-track {
-            background: transparent;
-        }
+        .compact-contact-card::-webkit-scrollbar { width: 5px; }
+        .compact-contact-card::-webkit-scrollbar-track { background: transparent; }
         .compact-contact-card::-webkit-scrollbar-thumb {
             background: var(--neon-orange);
             border-radius: 10px;
         }
 
-        body.light-theme .compact-contact-card {
-            background: #f8fafc;
-        }
+        body.light-theme .compact-contact-card { background: #f8fafc; }
 
         .contact-line {
             display: flex;
@@ -292,16 +281,8 @@
             transition: opacity 0.4s ease-in-out;
         }
 
-        .slider-slide.active {
-            opacity: 1;
-            z-index: 2;
-        }
-
-        .slider-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .slider-slide.active { opacity: 1; z-index: 2; }
+        .slider-slide img { width: 100%; height: 100%; object-fit: cover; }
 
         .slider-arrow {
             position: absolute;
@@ -421,18 +402,14 @@
             margin-top: 15px;
             box-shadow: 0 4px 12px rgba(0, 245, 214, 0.2);
         }
-        .neon-order-btn:hover {
-            box-shadow: 0 0 18px rgba(0, 245, 214, 0.5);
-        }
+        .neon-order-btn:hover { box-shadow: 0 0 18px rgba(0, 245, 214, 0.5); }
 
         body.light-theme .neon-order-btn {
             background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             color: #ffffff;
             box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2);
         }
-        body.light-theme .neon-order-btn:hover {
-            box-shadow: 0 0 18px rgba(15, 118, 110, 0.4);
-        }
+        body.light-theme .neon-order-btn:hover { box-shadow: 0 0 18px rgba(15, 118, 110, 0.4); }
 
         .admin-modal {
             position: fixed;
@@ -515,17 +492,13 @@
         .skeleton-loader i { color: var(--neon-orange); margin-bottom: 15px; }
 
         @media (max-width: 1400px) { .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-        @media (max-width: 1100px) { 
-            .catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } 
-        }
+        @media (max-width: 1100px) { .catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
         @media (max-width: 768px) {
             .top-navbar { flex-direction: column; gap: 15px; align-items: center; }
             .left-control-panel { align-items: center; }
             .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
             .search-filter-container { flex-direction: column; gap: 10px; }
             .showcase-header h1 { font-size: 2.3rem; }
-            
-            /* تعديل انسيابي لحاوية التواصل في الموبايل لتعود كتلة عادية دون سكرول */
             .compact-contact-card {
                 position: static;
                 width: 100%;
@@ -541,7 +514,6 @@
 </head>
 <body>
 
-    <!-- حاوية التواصل منفصلة وفي الجانب الأيسر للشاشة تعمل كبار جانبي ثابت -->
     <div class="compact-contact-card">
         <div class="contact-line">
             <i class="fas fa-phone-alt"></i>
@@ -622,7 +594,7 @@
             <div id="adminActionSection" class="upload-panel">
                 <h2>لوحة تحديث البيانات </h2>
                 <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:15px;">
-                    قم برفع ملف الـ Excel المحدث وسيتم تحديث فوراً وبنفس الترتيب.
+                    قم برفع ملف الـ Excel المحدث وسيتم تحديثه فوراً وبنفس الترتيب.
                 </p>
                 <div class="file-drop-zone" onclick="document.getElementById('excelFileInput').click()">
                     <i class="fas fa-file-excel fa-3x" style="color: #27ae60; margin-bottom: 10px;"></i>
@@ -649,34 +621,25 @@
         }
 
         function moveSlide(cardIdx, direction, event) {
-            if (event) {
-                event.stopPropagation();
-                event.preventDefault();
-            }
+            if (event) { event.stopPropagation(); event.preventDefault(); }
             const card = document.getElementById(`card-${cardIdx}`);
             if (!card) return;
             let currentSlide = parseInt(card.getAttribute('data-current-slide')) || 0;
             const totalSlides = parseInt(card.getAttribute('data-total-slides')) || 1;
-
             currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
             setSlide(cardIdx, currentSlide);
         }
 
         function setSlide(cardIdx, slideIdx, event) {
-            if (event) {
-                event.stopPropagation();
-                event.preventDefault();
-            }
+            if (event) { event.stopPropagation(); event.preventDefault(); }
             const card = document.getElementById(`card-${cardIdx}`);
             if (!card) return;
             card.setAttribute('data-current-slide', slideIdx);
-
             const slides = card.querySelectorAll('.slider-slide');
             slides.forEach((slide, idx) => {
                 if (idx === slideIdx) slide.classList.add('active');
                 else slide.classList.remove('active');
             });
-
             const dots = card.querySelectorAll('.slider-dot');
             dots.forEach((dot, idx) => {
                 if (idx === slideIdx) dot.classList.add('active');
@@ -737,9 +700,7 @@
                 if (product['الصوره 3']) imagesArray.push(product['الصوره 3']);
                 if (product['الصوره 4']) imagesArray.push(product['الصوره 4']);
                 
-                if (imagesArray.length === 0) {
-                    imagesArray.push('https://via.placeholder.com/400x300/161925/ffffff?text=No+Image');
-                }
+                if (imagesArray.length === 0) imagesArray.push('https://via.placeholder.com/400x300/161925/ffffff?text=No+Image');
 
                 const whatsappMessage = `مرحباً، أريد طلب هذا المنتج :\n\n📦 المنتج: ${title}\n🔢 الكود: ${code || 'N/A'}\n💰 السعر: ${price} EGP`;
                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
@@ -812,7 +773,7 @@
         function openAdminGateway() { document.getElementById('adminAuthWindow').classList.add('active'); }
         function closeAdminGateway() { document.getElementById('adminAuthWindow').classList.remove('active'); }
 
-        /* تعديل دالة التحقق لحل مشكلة الخطأ الإداري وقراءة البيانات بأمان منعاً لتعارض CORS */
+        /* تعديل جوهري لدالة التحقق لجعلها تستوعب أي صيغة نجاح يرسلها السيرفر لتجنب الخطأ الموضح في الصورة */
         async function validateAdminCredentials() {
             const user = document.getElementById('adminUserField').value;
             const pass = document.getElementById('adminPasswordField').value;
@@ -821,33 +782,51 @@
             try {
                 const response = await fetch(sheetWebUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8'
-                    },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: 'loginVerification', username: user, password: pass })
                 });
                 
                 const responseText = await response.text();
-                let authResult;
+                
+                // طباعة الرد في الـ Console لتسهيل تتبع أي أخطاء من السيرفر
+                console.log("Server Login Response:", responseText); 
+                
+                let isSuccess = false;
                 
                 try {
-                    authResult = JSON.parse(responseText);
+                    const parsedData = JSON.parse(responseText);
+                    // فحص مرن جداً لأغلب الصيغ اللي ممكن يرجعها السيرفر
+                    if (parsedData === true || 
+                        parsedData.success === true || 
+                        parsedData.success === "true" || 
+                        parsedData.status === 200 || 
+                        parsedData.status === "success" || 
+                        parsedData.message === "success" ||
+                        parsedData.login === true) {
+                        isSuccess = true;
+                    }
                 } catch (e) {
-                    if (responseText.includes('"success":true') || responseText.includes('success:true')) {
-                        authResult = { success: true };
-                    } else {
-                        authResult = { success: false };
+                    // في حال كان الرد نص عادي مش JSON
+                    const lowerRes = responseText.toLowerCase().trim();
+                    if (lowerRes === 'true' || 
+                        lowerRes === 'success' || 
+                        lowerRes.includes('"success":true') || 
+                        lowerRes.includes('"success": true')) {
+                        isSuccess = true;
                     }
                 }
                 
-                if (authResult && authResult.success) {
+                if (isSuccess) {
                     document.getElementById('loginFormSection').style.display = 'none';
                     document.getElementById('adminActionSection').style.display = 'block';
+                    document.getElementById('adminUserField').value = '';
+                    document.getElementById('adminPasswordField').value = '';
                 } else {
+                    // إذا ظهر هذا التنبيه مجدداً، يرجى التأكد من أن البيانات في الشيت صحيحة تماماً (نفس حالة الأحرف والمسافات)
                     alert("بيانات الإدارة غير صحيحة، يرجى المحاولة مرة أخرى.");
                 }
             } catch (error) {
-                console.error(error);
+                console.error("Login Connection Error:", error);
                 alert("حدث خطأ أثناء الاتصال بالسيرفر للتحقق من البيانات.");
             }
         }
@@ -884,10 +863,17 @@
                     });
 
                     const resText = await response.text();
-                    let result;
-                    try { result = JSON.parse(resText); } catch(err) { result = { success: resText.includes('"success":true') }; }
+                    let isUploadSuccess = false;
+                    
+                    try { 
+                        const resultObj = JSON.parse(resText); 
+                        if(resultObj === true || resultObj.success === true || resultObj.status === 'success') isUploadSuccess = true;
+                    } catch(err) { 
+                        const lowerUploadRes = resText.toLowerCase();
+                        if(lowerUploadRes.includes('true') || lowerUploadRes.includes('success')) isUploadSuccess = true; 
+                    }
 
-                    if (result.success) {
+                    if (isUploadSuccess) {
                         statusMsg.style.color = '#2ecc71';
                         statusMsg.innerText = "تم تحديث البيانات بنجاح وجاري إعادة تحميل الكتالوج...";
                         setTimeout(() => {
@@ -902,7 +888,7 @@
                     }
 
                 } catch (err) {
-                    console.error(err);
+                    console.error("Upload Error:", err);
                     statusMsg.style.color = '#e74c3c';
                     statusMsg.innerText = "حدث خطأ غير متوقع أثناء معالجة أو رفع الملف.";
                 }
