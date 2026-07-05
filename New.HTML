@@ -82,7 +82,6 @@
             box-shadow: 0 0 10px var(--neon-orange-glow);
         }
 
-        /* أنيميشن مطور ومستمر للوجو يمنع الاهتزاز المفاجئ */
         @keyframes dynamicLogoAnim {
             0%, 100% { 
                 transform: translateY(0) scale(1); 
@@ -164,7 +163,7 @@
             flex-direction: column;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             height: 100%;
-            contain: content; /* تحسين أداء المتصفح ومنع الوميض */
+            contain: content;
         }
 
         .dynamic-card:hover {
@@ -173,7 +172,6 @@
             box-shadow: 0 8px 25px rgba(255, 85, 0, 0.15);
         }
 
-        /* نظام مسرح الصور المطور كلياً - يعتمد على الـ Fade لمنع الوميض */
         .image-canvas {
             position: relative;
             width: 100%;
@@ -214,7 +212,6 @@
             object-fit: cover;
         }
 
-        /* أسهم تنقل احترافية وبارزة */
         .slider-arrow {
             position: absolute;
             top: 50%;
@@ -239,7 +236,6 @@
             border-color: var(--neon-orange);
             box-shadow: 0 0 10px var(--neon-orange-glow);
         }
-        /* التثبيت بناءً على قواعد اتجاه الصفحة العربي */
         .slider-arrow.prev { right: 10px; }
         .slider-arrow.next { left: 10px; }
 
@@ -336,7 +332,6 @@
             box-shadow: 0 0 18px rgba(0, 245, 214, 0.5);
         }
 
-        /* كارت التواصل الاحترافي الفاخر */
         .premium-contact-section {
             max-width: 1600px;
             margin: 40px auto 20px auto;
@@ -415,7 +410,6 @@
         .complaints-box h3 { font-size: 1.2rem; color: var(--text-primary); margin-bottom: 8px; }
         .complaints-box p { font-size: 1.3rem; font-weight: 800; color: #ff2a5f; letter-spacing: 0.5px; }
 
-        /* تعديل تموضع حاوية المودال لتظهر بالأعلى قليلاً مريحة للعين */
         .admin-modal {
             position: fixed;
             top: 0;
@@ -545,7 +539,7 @@
         </div>
     </div>
 
-    <!-- كارت التواصل الاحترافي الجديد أسفل الكتالوج -->
+    <!-- كارت التواصل الاحترافي المحدث والمربوط بالرقم الجديد تلقائياً -->
     <div class="premium-contact-section">
         <div class="contact-grid">
             <div class="contact-main-info">
@@ -555,14 +549,14 @@
                         <i class="fas fa-phone-alt"></i>
                         <div>
                             <h4>موبايل التواصل الرئيسي</h4>
-                            <a href="tel:01202999612">01202999612</a>
+                            <a href="tel:01202999612" id="staticPhoneLabel">01202999612</a>
                         </div>
                     </div>
                     <div class="info-sub-card wa-card">
                         <i class="fab fa-whatsapp"></i>
                         <div>
                             <h4>المراسلة الفورية عبر واتساب</h4>
-                            <a href="https://wa.me/201202999612" target="_blank">01202999612 (اضغط للدردشة)</a>
+                            <a href="https://wa.me/201202999612" target="_blank" id="staticWhatsAppLink">01202999612 (اضغط للدردشة)</a>
                         </div>
                     </div>
                     <div class="info-sub-card fb-card">
@@ -628,7 +622,9 @@
     <script>
         // إعدادات الربط الثابتة واللوجيك الخاص بك
         const sheetWebUrl = "https://script.google.com/macros/s/AKfycby8PaW4rTRez_rd4HM8HsqkPGlUOO22FbFRtubDf4tBdovHb5m7SEJJnnT1a8CQeeS7NA/exec";
-        const phoneNumber = "201202999612"; // تم التحديث لرقم تواصلك المباشر الجديد
+        
+        // غير هذا الرقم وسيحدث السكربت نفسه تلقائياً في كل الأزرار والكروت بالأسفل
+        const phoneNumber = "201202999612"; 
         
         let localProductsMasterArray = []; 
 
@@ -644,6 +640,13 @@
         async function fetchAndRenderCatalog() {
             const container = document.getElementById('catalog-container');
             try {
+                // تحديث كروت التواصل الثابتة بناء على رقم الـ WhatsApp الرئيسي المحدد بالأعلى
+                const cleanNum = phoneNumber.startsWith('2') ? phoneNumber.substring(2) : phoneNumber;
+                document.getElementById('staticPhoneLabel').innerText = cleanNum;
+                document.getElementById('staticPhoneLabel').href = "tel:" + cleanNum;
+                document.getElementById('staticWhatsAppLink').innerText = cleanNum + " (اضغط للدردشة)";
+                document.getElementById('staticWhatsAppLink').href = "https://wa.me/" + phoneNumber;
+
                 const response = await fetch(sheetWebUrl);
                 localProductsMasterArray = await response.json();
                 
@@ -696,7 +699,6 @@
                 const whatsappMessage = `مرحباً، أريد طلب هذا المنتج من خلال الكتالوج:\n\n📦 المنتج: ${title}\n🔢 الكود: ${code || 'N/A'}\n💰 السعر: ${price} EGP`;
                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
                 
-                // بناء شرائح الصور مع كلاس السلايدر المطور
                 let slidesHTML = '';
                 imagesArray.forEach((img, imgIdx) => {
                     slidesHTML += `<div class="slider-slide ${imgIdx === 0 ? 'active' : ''}"><img src="${img}" alt="${title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300/161925/ffffff?text=Error+Loading'"></div>`;
@@ -705,7 +707,6 @@
                 let controlsHTML = '';
                 let dotsHTML = '';
                 if (imagesArray.length > 1) {
-                    // أسهم تنقل واضحة بالكامل وثابتة
                     controlsHTML = `
                         <button class="slider-arrow prev" onclick="moveSlide(${pIndex}, -1)">❮</button>
                         <button class="slider-arrow next" onclick="moveSlide(${pIndex}, 1)">❯</button>
@@ -745,7 +746,6 @@
             });
         }
 
-        // اللوجيك البرمي لحركة السلايدر بدون أي وميض أو ومضات مفاجئة
         window.moveSlide = function(cardIdx, direction) {
             const card = document.getElementById(`card-${cardIdx}`);
             let currentSlide = parseInt(card.getAttribute('data-current-slide'));
@@ -807,27 +807,26 @@
                     body: JSON.stringify({ action: 'loginVerification', username: user, password: pass })
                 });
                 const authResult = await response.json();
-                if(authResult.status === "success") {
+                
+                if (authResult.success) {
                     document.getElementById('loginFormSection').style.display = 'none';
                     document.getElementById('adminActionSection').style.display = 'block';
                 } else {
-                    alert("بيانات المسؤول غير صحيحة!");
+                    alert("بيانات الإدارة غير صحيحة، يرجى المحاولة مرة أخرى.");
                 }
-            } catch (err) {
-                console.error(err);
-                alert("حدث خطأ بالربط؛ تم تحويلك افتراضياً للوحة الرفع.");
-                document.getElementById('loginFormSection').style.display = 'none';
-                document.getElementById('adminActionSection').style.display = 'block';
+            } catch (error) {
+                console.error(error);
+                alert("حدث خطأ أثناء الاتصال بالسيرفر للتحقق من البيانات.");
             }
         }
 
-        function handleExcelFileUpload(event) {
+        async function handleExcelFileUpload(event) {
             const file = event.target.files[0];
-            const statusZone = document.getElementById('uploadStatusMessage');
             if (!file) return;
 
-            statusZone.style.color = "var(--text-primary)";
-            statusZone.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري قراءة الملف...`;
+            const statusMsg = document.getElementById('uploadStatusMessage');
+            statusMsg.style.color = 'var(--text-primary)';
+            statusMsg.innerText = "جاري قراءة ملف الـ Excel وحساب المصفوفات...";
 
             const reader = new FileReader();
             reader.onload = async function(e) {
@@ -836,40 +835,35 @@
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
-                    const excelParsedRows = XLSX.utils.sheet_to_json(worksheet);
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-                    if(excelParsedRows.length === 0) {
-                        statusZone.style.color = "#ff2a5f";
-                        statusZone.innerHTML = "الملف فارغ!";
-                        return;
-                    }
+                    statusMsg.innerText = "جاري رفع البيانات وتحديث شيت جوجل المربوط...";
 
-                    statusZone.innerHTML = `<i class="fas fa-cloud-upload-alt fa-spin"></i> جاري إرسال التحديث لشيت جوجل الأساسي...`;
-
-                    const uploadResponse = await fetch(sheetWebUrl, {
+                    const response = await fetch(sheetWebUrl, {
                         method: 'POST',
-                        body: JSON.stringify({ action: 'bulkDataUpdate', productsData: excelParsedRows })
+                        body: JSON.stringify({ action: 'updateCatalogData', data: jsonData })
                     });
-                    const syncResult = await uploadResponse.json();
+                    const result = await response.json();
 
-                    if(syncResult.status === "success") {
-                        statusZone.style.color = "#00f5d4";
-                        statusZone.innerHTML = `<i class="fas fa-check-circle"></i> تم المزامنة بنجاح!`;
+                    if (result.success) {
+                        statusMsg.style.color = '#00f5d4';
+                        statusMsg.innerText = "تم التحديث بنجاح! جاري إعادة جلب البيانات الجديدة...";
                         fetchAndRenderCatalog();
                     } else {
-                        statusZone.style.color = "#ff2a5f";
-                        statusZone.innerHTML = "فشل تحديث الأصناف بالسيرفر.";
+                        statusMsg.style.color = '#ff2a5f';
+                        statusMsg.innerText = "فشل التحديث: " + (result.message || "خطأ غير معروف");
                     }
-                } catch (error) {
-                    console.error(error);
-                    statusZone.style.color = "#ff5500";
-                    statusZone.innerHTML = "خطأ معالجة في رفع البيانات.";
+                } catch (err) {
+                    console.error(err);
+                    statusMsg.style.color = '#ff2a5f';
+                    statusMsg.innerText = "حدث خطأ مفاجئ أثناء معالجة الملف.";
                 }
             };
             reader.readAsArrayBuffer(file);
         }
 
-        document.addEventListener("DOMContentLoaded", fetchAndRenderCatalog);
+        // تشغيل الجلب التلقائي فور تحميل الصفحة وبناء كارت التواصل بالكامل
+        document.addEventListener('DOMContentLoaded', fetchAndRenderCatalog);
     </script>
 </body>
 </html>
