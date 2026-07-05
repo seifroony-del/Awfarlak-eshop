@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كتالوج المنتجات الرقمي</title>
+    <!-- استدعاء مكتبة Font Awesome لأيقونة الواتساب -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* التنسيق العام للموقع وتفعيل تخطيط الـ LTR */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            direction: ltr; 
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 25px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            color: #d68598; /* اللون الوردي المائل للبوستاج للماركة */
+        }
+
+        .header p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        /* شبكة عرض كروت المنتجات */
+        .catalog-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* تصميم كارت المنتج المميز */
+        .product-card {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.04);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e9ecef;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            background-color: #f1f3f5;
+        }
+
+        .product-info {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            text-align: right; /* محاذاة نصوص المنتج العربية جهة اليمين داخل الكارت */
+        }
+
+        .product-title {
+            font-size: 1.25rem;
+            margin: 0 0 10px 0;
+            color: #333333;
+            font-weight: 600;
+        }
+
+        .product-desc {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin: 0 0 15px 0;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #f1f3f5;
+            direction: rtl;
+        }
+
+        .product-price {
+            font-size: 1.35rem;
+            font-weight: bold;
+            color: #d68598;
+        }
+
+        /* تصميم زرار الواتساب المباشر */
+        .whatsapp-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #8dcdb9; /* الأخضر الهادئ المتناسق */
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+            direction: rtl;
+            font-size: 1rem;
+        }
+
+        .whatsapp-btn:hover {
+            background-color: #7bbea9;
+        }
+
+        .loading {
+            text-align: center;
+            grid-column: 1 / -1;
+            font-size: 1.2rem;
+            color: #6c757d;
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>كتالوج المنتجات الحية</h1>
+        <p>تصفح منتجاتنا واطلب مباشرة عبر المحادثة الفورية</p>
+    </div>
+
+    <!-- حاوية عرض الكروت الديناميكية -->
+    <div class="catalog-container" id="catalog-container">
+        <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري مزامنة وجلب المنتجات من الجدول...</div>
+    </div>
+
+    <script>
+        // ==================== إعدادات الربط الخاصة بك ====================
+        
+        // 1. استبدل النص التالي وحط مكانه رابط الـ Web App اللي أخدته من جوجل شيت
+        const sheetWebUrl = "ضع_رابط_الـ_WEB_APP_هنا";
+        
+        // 2. اكتب هنا رقم الواتساب الخاص بك (كود الدولة ثم الرقم بدون أصفار في الأول وبدون علامة +)
+        // مثال لمصر: 201000000000
+        const phoneNumber = "201000000000"; 
+
+        // =============================================================
+
+        async function fetchLiveProducts() {
+            const container = document.getElementById('catalog-container');
+            
+            try {
+                const response = await fetch(sheetWebUrl);
+                const products = await response.json();
+                
+                if (!products || products.length === 0) {
+                    container.innerHTML = '<div class="loading">لا توجد منتجات متاحة في الجدول حالياً.</div>';
+                    return;
+                }
+                
+                container.innerHTML = ''; // إخفاء رسالة التحميل بمجرد وصول المنتجات
+                
+                products.forEach(product => {
+                    // تجهيز رسالة مخصصة تروح للواتساب تلقائياً عند الضغط
+                    const textMessage = `السلام عليكم، أريد طلب منتج: ${product.title}\nبسعر: ${product.price} جنيه.`;
+                    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(textMessage)}`;
+                    
+                    // توليد هيكل الكارت ديناميكياً
+                    const cardTemplate = `
+                        <div class="product-card">
+                            <img src="${product.image || 'https://via.placeholder.com/300x230?text=No+Image'}" alt="${product.title}" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">${product.title}</h3>
+                                <p class="product-desc">${product.description || 'لا يوجد وصف متوفر.'}</p>
+                                <div class="product-meta">
+                                    <span class="product-price">${product.price} EGP</span>
+                                </div>
+                                <a href="${whatsappUrl}" target="_blank" class="whatsapp-btn">
+                                    <i class="fab fa-whatsapp"></i> اطلب عبر الواتساب
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += cardTemplate;
+                });
+                
+            } catch (error) {
+                console.error("حدث خطأ أثناء الاتصال بجوجل شيت:", error);
+                container.innerHTML = '<div class="loading" style="color: #d68598;">عذراً، حدث خطأ أثناء مزامنة البيانات. تأكد من وضع رابط الـ Web App الصحيح وتفعيل الصلاحية لـ Anyone.</div>';
+            }
+        }
+
+        // تشغيل عملية الربط فور فتح الصفحة
+        if (sheetWebUrl !== "ضع_رابط_الـ_WEB_APP_هنا") {
+            fetchLiveProducts();
+        }
+    </script>
+</body>
+</html>
