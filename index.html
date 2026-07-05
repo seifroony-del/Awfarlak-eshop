@@ -270,10 +270,10 @@
     <script>
         // ==================== لوحة التحكم والربط الديناميكي السريع ====================
         
-        // 1. ضع رابط الـ Web App المأخوذ من الـ Apps Script بداخل جوجل شيت هنا:
-        const sheetWebUrl = "ضع_رابط_الـ_WEB_APP_هنا";
+        // 1. تم وضع رابط الـ Web App المأخوذ من الـ Apps Script هنا بنجاح:
+        const sheetWebUrl = "https://script.google.com/macros/s/AKfycby8PaW4rTRez_rd4HM8HsqkPGlUOO22FbFRtubDf4tBdovHb5m7SEJJnnT1a8CQeeS7NA/exec";
         
-        // 2. اكتب رقم هاتفك لاستقبال الطلبات الفورية مباشرة (بدور الأصفار الأولى وبدون علامة +):
+        // 2. اكتب رقم هاتفك هنا لاستقبال الطلبات الفورية مباشرة (بدون علامة +):
         const phoneNumber = "201000000000"; 
 
         // ===========================================================================
@@ -293,11 +293,9 @@
                 container.innerHTML = ''; // تصفير واجهة التحميل وبدء الرسم الاحترافي الفوري
                 
                 products.forEach(product => {
-                    // تشفير نص الرسالة الأوتوماتيكي للواتساب لحماية الروابط وتسريع فتح التطبيق
                     const whatsappMessage = `مرحباً، أريد طلب هذا المنتج الفاخر من خلال الكتالوج الذكي:\n\n📦 المنتج: ${product.title}\n💰 السعر: ${product.price} EGP\n\nبرجاء تأكيد الطلب لتجهيز الشحن الفوري الحصري.`;
                     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
                     
-                    // توليد هيكل الكارت ثلاثي الأبعاد بالنيون التفاعلي الحركي
                     const cardHTML = `
                         <div class="dynamic-card">
                             <span class="category-badge">${product.category || 'Premium'}</span>
@@ -328,7 +326,7 @@
         }
 
         // تشغيل المحرك فورا للتصفح فائق السرعة
-        if (sheetWebUrl !== "https://script.google.com/macros/s/AKfycby8PaW4rTRez_rd4HM8HsqkPGlUOO22FbFRtubDf4tBdovHb5m7SEJJnnT1a8CQeeS7NA/exec") {
+        if (sheetWebUrl !== "ضع_رابط_الـ_WEB_APP_هنا") {
             initializePremiumCatalog();
         }
     </script>
