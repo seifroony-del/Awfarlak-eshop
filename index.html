@@ -887,33 +887,65 @@
             document.getElementById('modalContentWrapper').classList.remove('wide-panel');
         }
 
-        // --- تعديل دالة التحقق لتمرير البيانات بشكل مزدوج (رابط + Body) لضمان القبول الفوري ---
+        // --- تحديث دالة التحقق لتكون هجينة ومرنة تماماً ضد مسميات السيرفر ونوع الطلب ---
         async function validateAdminCredentials() {
             const user = document.getElementById('adminUserField').value.trim();
             const pass = document.getElementById('adminPasswordField').value.trim();
             if(!user || !pass) { alert("برجاء إدخال اسم المستخدم وكلمة المرور أولاً!"); return; }
 
-            // تمرير الأكشن واليوزر والباسورد في الرابط لتغذية e.parameter وفي نفس الوقت بالـ Body كـ JSON
-            const optimizedAuthUrl = `${sheetWebUrl}?action=loginVerification&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`;
+            // تجميع كل المتغيرات الممكنة لعدم حدوث أي خطأ في مسميات السيرفر
+            const queryParams = new URLSearchParams();
+            queryParams.append('action', 'loginVerification');
+            queryParams.append('username', user);
+            queryParams.append('user', user);
+            queryParams.append('password', pass);
+            queryParams.append('pass', pass);
+
+            const jsonBody = {
+                action: 'loginVerification',
+                username: user,
+                user: user,
+                password: pass,
+                pass: pass
+            };
+
+            let authResult = { success: false };
 
             try {
-                const response = await fetch(optimizedAuthUrl, {
+                // المحاولة الأولى: POST متكامل بالرابط وجسم الطلب لضمان تلبية كل شروط دالة doPost
+                const postUrl = `${sheetWebUrl}?${queryParams.toString()}`;
+                const response = await fetch(postUrl, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'loginVerification', username: user, password: pass })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(jsonBody)
                 });
-                const authResult = await response.json();
-                
-                if (authResult.success) {
-                    document.getElementById('loginFormSection').style.display = 'none';
-                    document.getElementById('adminActionSection').style.display = 'block';
-                    document.getElementById('modalContentWrapper').classList.add('wide-panel');
-                    buildEditableTableBody();
-                } else {
-                    alert("بيانات الإدارة غير صحيحة، يرجى المحاولة مرة أخرى.");
+                authResult = await response.json();
+            } catch (postError) {
+                console.log("POST request fallback triggered.");
+            }
+
+            // المحاولة الثانية (Fallback): إذا رجع خطأ أو رفض الدخول، نجرب فوراً الـ GET (لو السيرفر شغال بدالة doGet)
+            if (!authResult || !authResult.success) {
+                try {
+                    const getUrl = `${sheetWebUrl}?${queryParams.toString()}&t=${Date.now()}`;
+                    const getResponse = await fetch(getUrl, { method: 'GET' });
+                    const getResult = await getResponse.json();
+                    if (getResult && getResult.success) {
+                        authResult = getResult;
+                    }
+                } catch (getError) {
+                    console.error("GET fallback error:", getError);
                 }
-            } catch (error) {
-                console.error(error);
-                alert("حدث خطأ أثناء الاتصال بالسيرفر للتحقق من البيانات.");
+            }
+
+            // معالجة النتيجة النهائية للمحاولتين المضمونتين
+            if (authResult && authResult.success) {
+                document.getElementById('loginFormSection').style.display = 'none';
+                document.getElementById('adminActionSection').style.display = 'block';
+                document.getElementById('modalContentWrapper').classList.add('wide-panel');
+                buildEditableTableBody();
+            } else {
+                alert("بيانات الإدارة غير صحيحة، يرجى المحاولة مرة أخرى.");
             }
         }
 
@@ -953,7 +985,6 @@
             appendRowToTable({}, Date.now());
         }
 
-        // --- تعديل دالة حفظ الجدول وتمرير الأكشن في الروابط لضمان التوجيه الصحيح بالخلفية ---
         async function saveTableChangesToServer() {
             const rows = document.querySelectorAll('.editable-product-row');
             const dataToUpload = [];
@@ -984,6 +1015,7 @@
             try {
                 const response = await fetch(optimizedSaveUrl, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'updateCatalogData', data: dataToUpload })
                 });
                 const result = await response.json();
@@ -1023,7 +1055,6 @@
             XLSX.writeFile(workbook, "Awfarlak_Catalog_Manger.xlsx");
         }
 
-        // --- تعديل دالة رفع الإكسيل وتمرير الأكشن في الرابط لضمان التوجيه الصحيح بالخلفية ---
         async function handleExcelFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1053,6 +1084,7 @@
 
                     const response = await fetch(optimizedUploadUrl, {
                         method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ action: 'updateCatalogData', data: parsedJsonData })
                     });
                     const result = await response.json();
