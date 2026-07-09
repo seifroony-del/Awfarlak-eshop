@@ -503,8 +503,8 @@
         .editable-table {
             width: 100%;
             border-collapse: collapse;
-            direction: rtl;
-            text-align: right;
+            direction: ltr;
+            text-align: left;
         }
 
         .editable-table th, .editable-table td {
@@ -520,6 +520,7 @@
             position: sticky;
             top: 0;
             z-index: 5;
+            text-align: left;
         }
 
         .editable-table input {
@@ -531,6 +532,7 @@
             color: var(--text-primary);
             font-family: 'Tajawal', sans-serif;
             font-size: 0.85rem;
+            text-align: left;
         }
 
         .editable-table input:focus {
@@ -793,144 +795,167 @@
 
         function renderCatalogGrid(productsList) {
             const container = document.getElementById('catalog-container');
-            container.innerHTML = ''; 
+            let htmlBuilder = ''; 
 
             productsList.forEach((product, pIndex) => {
                 const title = product['اسم المنتج'] || product.title || 'منتج بدون اسم';
                 const price = product['سعر القطعة'] || product.price || '0';
                 const code = product['كود المنتج'] || product.code || '';
                 const category = product['التصنيف'] || product.category || 'عام';
-                const boxQty = product['الكمية داخل الكرتونة'] || product['الكمية بالكرتونة'] || '';
-
-                // حل مشكلة الصور: استدعاء المفاتيح بكل الاحتمالات (تاء مربوطة أو هاء)
-                const imagesArray = [];
-                const img1 = product['الصورة 1'] || product['الصورة'] || product['الصوره 1'] || product['الصوره'];
-                const img2 = product['الصورة 2'] || product['الصوره 2'];
-                const img3 = product['الصورة 3'] || product['الصوره 3'];
-                const img4 = product['الصورة 4'] || product['الصوره 4'];
-
-                if (img1) imagesArray.push(img1);
-                if (img2) imagesArray.push(img2);
-                if (img3) imagesArray.push(img3);
-                if (img4) imagesArray.push(img4);
+                const boxQty = product['الكمية بالكرتونة'] || product.boxQty || 'غير محدد';
                 
-                if (imagesArray.length === 0) {
-                    imagesArray.push('https://via.placeholder.com/400x300/161925/ffffff?text=No+Image');
+                // جلب الصور واستبعاد الفارغة منها
+                const img1 = product['الصورة 1'] || '';
+                const img2 = product['الصورة 2'] || '';
+                const img3 = product['الصورة 3'] || '';
+                const img4 = product['الصورة 4'] || '';
+                const images = [img1, img2, img3, img4].filter(img => img && img.trim() !== '');
+                
+                if (images.length === 0) {
+                    images.push('https://via.placeholder.com/300x230?text=No+Image');
                 }
 
-                const whatsappMessage = `مرحباً، أريد طلب هذا المنتج :\n\n📦 المنتج: ${title}\n🔢 الكود: ${code || 'N/A'}\n💰 السعر: ${price} EGP`;
-                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+                const cardId = `card-${pIndex}`;
                 
-                let slidesHTML = '';
-                imagesArray.forEach((img, imgIdx) => {
-                    slidesHTML += `<div class="slider-slide ${imgIdx === 0 ? 'active' : ''}"><img src="${img}" alt="${title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300/161925/ffffff?text=Error+Loading'"></div>`;
+                let slidesHtml = '';
+                let dotsHtml = '';
+                
+                images.forEach((imgSrc, imgIndex) => {
+                    slidesHtml += `<div class="slider-slide ${imgIndex === 0 ? 'active' : ''}"><img src="${imgSrc}" alt="${title}" loading="lazy"></div>`;
+                    if (images.length > 1) {
+                        dotsHtml += `<div class="slider-dot ${imgIndex === 0 ? 'active' : ''}" onclick="setSlide(${pIndex}, ${imgIndex}, event)"></div>`;
+                    }
                 });
 
-                let controlsHTML = '';
-                let dotsHTML = '';
-                if (imagesArray.length > 1) {
-                    controlsHTML = `
-                        <button class="slider-arrow prev" onclick="moveSlide(${pIndex}, -1, event)">❮</button>
-                        <button class="slider-arrow next" onclick="moveSlide(${pIndex}, 1, event)">❯</button>
+                let arrowsHtml = '';
+                if (images.length > 1) {
+                    arrowsHtml = `
+                        <div class="slider-arrow prev" onclick="moveSlide(${pIndex}, -1, event)"><i class="fas fa-chevron-left"></i></div>
+                        <div class="slider-arrow next" onclick="moveSlide(${pIndex}, 1, event)"><i class="fas fa-chevron-right"></i></div>
                     `;
-                    dotsHTML = `<div class="slider-dots">`;
-                    imagesArray.forEach((_, imgIdx) => {
-                        dotsHTML += `<span class="slider-dot ${imgIdx === 0 ? 'active' : ''}" onclick="setSlide(${pIndex}, ${imgIdx}, event)"></span>`;
-                    });
-                    dotsHTML += `</div>`;
                 }
 
-                const cardHTML = `
-                    <div class="dynamic-card" id="card-${pIndex}" data-current-slide="0" data-total-slides="${imagesArray.length}">
+                const waMessage = encodeURIComponent(`مرحباً، أود الاستفسار/طلب هذا المنتج:\nالاسم: ${title}\nالكود: ${code}\nالسعر: ${price}`);
+                const waLink = `https://wa.me/${phoneNumber}?text=${waMessage}`;
+
+                htmlBuilder += `
+                    <div class="dynamic-card" id="${cardId}" data-current-slide="0" data-total-slides="${images.length}">
                         <div class="image-canvas">
-                            <div class="slider-wrapper" id="slider-wrapper-${pIndex}">
-                                ${slidesHTML}
-                            </div>
-                            ${controlsHTML}
-                            ${dotsHTML}
+                            <div class="slider-wrapper">${slidesHtml}</div>
+                            ${arrowsHtml}
+                            <div class="slider-dots">${dotsHtml}</div>
                         </div>
-                        <span class="category-badge">${category}</span>
+                        <div class="category-badge">${category}</div>
                         <div class="card-details">
+                            <div class="product-code">كود: ${code}</div>
                             <h3>${title}</h3>
-                            <div class="product-code">كود: ${code || 'غير متوفر'}</div>
-                            ${boxQty ? `<div class="box-info">📦 الكرتونة: ${boxQty}</div>` : ''}
+                            <div class="box-info">الكمية بالكرتونة: ${boxQty}</div>
                             <div class="meta-pricing">
-                                <div>
-                                    <span class="price-label">السعر</span>
-                                    <div class="price-tag">${price} <span class="currency">ج.م</span></div>
-                                </div>
+                                <span class="price-label">السعر</span>
+                                <div><span class="price-tag">${price}</span><span class="currency">ج.م</span></div>
                             </div>
-                            <a href="${whatsappUrl}" target="_blank" class="neon-order-btn">
-                                <i class="fab fa-whatsapp"></i> اطلب الآن
+                            <a href="${waLink}" target="_blank" class="neon-order-btn">
+                                <i class="fab fa-whatsapp"></i> طلب المنتج
                             </a>
                         </div>
                     </div>
                 `;
-                container.innerHTML += cardHTML;
             });
+
+            container.innerHTML = htmlBuilder || '<div class="skeleton-loader">لا يوجد منتجات متاحة.</div>';
         }
 
+        // Search & Filter functionality
         function triggerLiveSearchFilter() {
-            const searchValue = document.getElementById('catalogSearchInput').value.toLowerCase();
-            const categoryValue = document.getElementById('categorySelectorDropdown').value;
-
-            const filteredData = localProductsMasterArray.filter(product => {
+            const searchTerm = document.getElementById('catalogSearchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categorySelectorDropdown').value;
+            
+            const filtered = localProductsMasterArray.filter(product => {
                 const title = (product['اسم المنتج'] || product.title || '').toLowerCase();
                 const code = (product['كود المنتج'] || product.code || '').toLowerCase();
-                const cat = product['التصنيف'] || product.category || '';
-
-                const matchesSearch = title.includes(searchValue) || code.includes(searchValue);
-                const matchesCategory = (categoryValue === 'ALL' || cat === categoryValue);
-
+                const category = product['التصنيف'] || product.category || '';
+                
+                const matchesSearch = title.includes(searchTerm) || code.includes(searchTerm);
+                const matchesCategory = categoryFilter === 'ALL' || category === categoryFilter;
+                
                 return matchesSearch && matchesCategory;
             });
-
-            renderCatalogGrid(filteredData);
+            
+            if (filtered.length === 0) {
+                document.getElementById('catalog-container').innerHTML = '<div class="skeleton-loader">لا توجد منتجات مطابقة للبحث.</div>';
+            } else {
+                renderCatalogGrid(filtered);
+            }
         }
 
+        // Admin functionality
         function openAdminGateway() {
             document.getElementById('adminAuthWindow').classList.add('active');
-            document.getElementById('loginFormSection').style.display = 'block';
-            document.getElementById('adminActionSection').style.display = 'none';
-            document.getElementById('modalContentWrapper').classList.remove('wide-panel');
         }
 
         function closeAdminGateway() {
             document.getElementById('adminAuthWindow').classList.remove('active');
         }
 
-        function validateAdminCredentials() {
+        async function validateAdminCredentials() {
             const user = document.getElementById('adminUserField').value;
             const pass = document.getElementById('adminPasswordField').value;
+            const btn = document.querySelector('#loginFormSection .neon-order-btn');
             
-            // بيانات الدخول الخاصة بالإدارة
-            if (user === 'admin' && pass === '123456') {
-                document.getElementById('loginFormSection').style.display = 'none';
-                document.getElementById('adminActionSection').style.display = 'block';
-                document.getElementById('modalContentWrapper').classList.add('wide-panel');
-                populateEditableTable();
-            } else {
-                alert('البيانات خاطئة! برجاء التأكد من اسم المستخدم وكلمة المرور.');
+            if (!user || !pass) {
+                alert('يرجى إدخال اسم المستخدم وكلمة المرور');
+                return;
+            }
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch(sheetWebUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: "loginVerification", username: user, password: pass })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === "success") {
+                    document.getElementById('loginFormSection').style.display = 'none';
+                    document.getElementById('adminActionSection').style.display = 'block';
+                    document.getElementById('modalContentWrapper').classList.add('wide-panel');
+                    populateEditableTable(localProductsMasterArray);
+                } else {
+                    alert(result.message || 'بيانات الدخول غير صحيحة');
+                }
+            } catch (error) {
+                alert('حدث خطأ في الاتصال أثناء التحقق');
+            } finally {
+                btn.innerHTML = 'دخول';
+                btn.disabled = false;
             }
         }
 
-        function populateEditableTable() {
+        function populateEditableTable(dataArray) {
             const tbody = document.getElementById('editableTableBody');
             tbody.innerHTML = '';
             
-            localProductsMasterArray.forEach((product, index) => {
+            if (!dataArray || dataArray.length === 0) {
+                addNewRowToEditableTable();
+                return;
+            }
+            
+            dataArray.forEach((product, index) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><input type="text" value="${product['اسم المنتج'] || ''}"></td>
-                    <td><input type="text" value="${product['كود المنتج'] || ''}"></td>
-                    <td><input type="text" value="${product['التصنيف'] || ''}"></td>
-                    <td><input type="text" value="${product['الكمية بالكرتونة'] || product['الكمية داخل الكرتونة'] || ''}"></td>
-                    <td><input type="text" value="${product['سعر القطعة'] || ''}"></td>
-                    <td><input type="text" value="${product['الصورة 1'] || product['الصورة'] || product['الصوره'] || ''}"></td>
-                    <td><input type="text" value="${product['الصورة 2'] || product['الصوره 2'] || ''}"></td>
-                    <td><input type="text" value="${product['الصورة 3'] || product['الصوره 3'] || ''}"></td>
-                    <td><input type="text" value="${product['الصورة 4'] || product['الصوره 4'] || ''}"></td>
-                    <td><button class="action-btn" style="background:#e74c3c; border:none; padding:6px 12px;" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button></td>
+                    <td><input type="text" value="${product['اسم المنتج'] || ''}" data-key="اسم المنتج"></td>
+                    <td><input type="text" value="${product['كود المنتج'] || ''}" data-key="كود المنتج"></td>
+                    <td><input type="text" value="${product['التصنيف'] || ''}" data-key="التصنيف"></td>
+                    <td><input type="text" value="${product['الكمية بالكرتونة'] || ''}" data-key="الكمية بالكرتونة"></td>
+                    <td><input type="text" value="${product['سعر القطعة'] || ''}" data-key="سعر القطعة"></td>
+                    <td><input type="text" value="${product['الصورة 1'] || ''}" data-key="الصورة 1"></td>
+                    <td><input type="text" value="${product['الصورة 2'] || ''}" data-key="الصورة 2"></td>
+                    <td><input type="text" value="${product['الصورة 3'] || ''}" data-key="الصورة 3"></td>
+                    <td><input type="text" value="${product['الصورة 4'] || ''}" data-key="الصورة 4"></td>
+                    <td><button onclick="this.closest('tr').remove()" style="color:red; background:none; border:none; cursor:pointer;"><i class="fas fa-trash"></i></button></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -940,93 +965,121 @@
             const tbody = document.getElementById('editableTableBody');
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><input type="text" value=""></td>
-                <td><input type="text" value=""></td>
-                <td><input type="text" value=""></td>
-                <td><input type="text" value=""></td>
-                <td><input type="text" value=""></td>
-                <td><input type="text" value=""></td>
-                <td><input type="text" value=""></td>
-                <td><input type="text" value=""></td>
-                <td><input type="text" value=""></td>
-                <td><button class="action-btn" style="background:#e74c3c; border:none; padding:6px 12px;" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button></td>
+                <td><input type="text" value="" data-key="اسم المنتج"></td>
+                <td><input type="text" value="" data-key="كود المنتج"></td>
+                <td><input type="text" value="" data-key="التصنيف"></td>
+                <td><input type="text" value="" data-key="الكمية بالكرتونة"></td>
+                <td><input type="text" value="" data-key="سعر القطعة"></td>
+                <td><input type="text" value="" data-key="الصورة 1"></td>
+                <td><input type="text" value="" data-key="الصورة 2"></td>
+                <td><input type="text" value="" data-key="الصورة 3"></td>
+                <td><input type="text" value="" data-key="الصورة 4"></td>
+                <td><button onclick="this.closest('tr').remove()" style="color:red; background:none; border:none; cursor:pointer;"><i class="fas fa-trash"></i></button></td>
             `;
-            tbody.appendChild(tr);
+            tbody.insertBefore(tr, tbody.firstChild);
         }
 
-        function saveTableChangesToServer() {
+        async function saveTableChangesToServer() {
             const tbody = document.getElementById('editableTableBody');
             const rows = tbody.querySelectorAll('tr');
-            const newData = [];
+            const productsData = [];
             
             rows.forEach(row => {
                 const inputs = row.querySelectorAll('input');
-                newData.push({
-                    'اسم المنتج': inputs[0].value,
-                    'كود المنتج': inputs[1].value,
-                    'التصنيف': inputs[2].value,
-                    'الكمية بالكرتونة': inputs[3].value,
-                    'سعر القطعة': inputs[4].value,
-                    'الصورة 1': inputs[5].value,
-                    'الصورة 2': inputs[6].value,
-                    'الصورة 3': inputs[7].value,
-                    'الصورة 4': inputs[8].value
+                const product = {};
+                let hasData = false;
+                inputs.forEach(input => {
+                    const key = input.getAttribute('data-key');
+                    product[key] = input.value;
+                    if (input.value.trim() !== '') hasData = true;
                 });
+                if (hasData) {
+                    productsData.push(product);
+                }
             });
-
-            // تحديث العرض المؤقت حتى يتم الربط مع السيرفر فعلياً
-            localProductsMasterArray = newData;
-            renderCatalogGrid(localProductsMasterArray);
             
-            document.getElementById('uploadStatusMessage').style.color = '#2ecc71';
-            document.getElementById('uploadStatusMessage').innerText = 'تم تحديث البيانات وعرضها بنجاح (للربط النهائي يجب تفعيل دالة الرفع للسيرفر)';
-            
-            setTimeout(() => { closeAdminGateway(); }, 1500);
-        }
-
-        function downloadCurrentCatalogAsExcel() {
-            if (typeof XLSX === 'undefined') {
-                alert('مكتبة تحميل الإكسيل غير متوفرة حالياً.');
+            if (productsData.length === 0) {
+                alert('الجدول فارغ! يرجى إضافة بيانات أولاً.');
                 return;
             }
-            const worksheet = XLSX.utils.json_to_sheet(localProductsMasterArray);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Catalog");
-            XLSX.writeFile(workbook, "Awfarlak_Catalog_Export.xlsx");
+
+            const statusMsg = document.getElementById('uploadStatusMessage');
+            statusMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري حفظ التعديلات...';
+            statusMsg.style.color = 'var(--neon-orange)';
+            
+            try {
+                const response = await fetch(sheetWebUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: "bulkDataUpdate", productsData: productsData })
+                });
+                const result = await response.json();
+                
+                if (result.status === "success") {
+                    statusMsg.innerHTML = '✅ ' + result.message;
+                    statusMsg.style.color = '#2ecc71';
+                    localProductsMasterArray = productsData;
+                    fetchAndRenderCatalog(); 
+                } else {
+                    statusMsg.innerHTML = '❌ خطأ: ' + result.message;
+                    statusMsg.style.color = '#e74c3c';
+                }
+            } catch (error) {
+                statusMsg.innerHTML = '❌ فشل الاتصال بالسيرفر أثناء الحفظ';
+                statusMsg.style.color = '#e74c3c';
+            }
         }
 
         function handleExcelFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-
+            
+            const statusMsg = document.getElementById('uploadStatusMessage');
+            statusMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري قراءة ملف الإكسيل...';
+            statusMsg.style.color = 'var(--neon-orange)';
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, {type: 'array'});
+                    const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
-                    const jsonFromExcel = XLSX.utils.sheet_to_json(worksheet);
+                    const json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
                     
-                    if (jsonFromExcel && jsonFromExcel.length > 0) {
-                        localProductsMasterArray = jsonFromExcel;
-                        populateEditableTable();
-                        renderCatalogGrid(localProductsMasterArray);
-                        document.getElementById('uploadStatusMessage').style.color = '#2ecc71';
-                        document.getElementById('uploadStatusMessage').innerText = 'تم قراءة الملف وتحديث الجدول بنجاح!';
+                    if (json && json.length > 0) {
+                        populateEditableTable(json);
+                        statusMsg.innerHTML = '✅ تم قراءة الملف بنجاح! راجع الجدول بالأسفل ثم اضغط "حفظ التعديلات".';
+                        statusMsg.style.color = '#2ecc71';
+                    } else {
+                        statusMsg.innerHTML = '❌ الملف فارغ أو الهيكل غير صحيح.';
+                        statusMsg.style.color = '#e74c3c';
                     }
-                } catch (err) {
-                    document.getElementById('uploadStatusMessage').style.color = '#e74c3c';
-                    document.getElementById('uploadStatusMessage').innerText = 'حدث خطأ أثناء قراءة الملف.';
-                    console.error(err);
+                } catch (error) {
+                    statusMsg.innerHTML = '❌ حدث خطأ أثناء معالجة الملف.';
+                    statusMsg.style.color = '#e74c3c';
                 }
             };
             reader.readAsArrayBuffer(file);
+            event.target.value = ''; 
         }
 
-        window.onload = () => {
+        function downloadCurrentCatalogAsExcel() {
+            if (!localProductsMasterArray || localProductsMasterArray.length === 0) {
+                alert('لا توجد بيانات متاحة لتحميلها.');
+                return;
+            }
+            
+            const worksheet = XLSX.utils.json_to_sheet(localProductsMasterArray);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+            
+            XLSX.writeFile(workbook, "Awfarlak_Catalog_Backup.xlsx");
+        }
+
+        // التهيئة الأولية عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
             fetchAndRenderCatalog();
-        };
+        });
     </script>
 </body>
 </html>
