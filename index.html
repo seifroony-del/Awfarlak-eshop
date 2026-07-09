@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Awfarlak Catalog - كتالوج اوفرلك</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- تم إضافة خط Cairo العصري -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
@@ -40,8 +39,7 @@
         }
 
         body {
-            /* تحديث الخط الأساسي ليكون Cairo */
-            font-family: 'Cairo', 'Tajawal', sans-serif;
+            font-family: 'Tajawal', 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-canvas);
             color: var(--text-primary);
             padding: 20px;
@@ -62,8 +60,6 @@
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 10;
         }
 
         .left-control-panel {
@@ -89,7 +85,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Tajawal', sans-serif;
         }
 
         .action-btn:hover {
@@ -97,15 +93,12 @@
             box-shadow: 0 0 10px var(--neon-orange-glow);
         }
 
-        /* تعديل كونتينر التواصل ليصبح ثابتاً بأعلى الصفحة وينزل أسفل الناف بار */
         .compact-contact-card {
-            position: fixed; 
+            position: absolute;
             left: 20px;
-            top: 130px; /* تم التعديل لينزل تحت الناف بار */
+            top: 130px;
             z-index: 99;
-            background: rgba(16, 18, 27, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: var(--bg-card);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             padding: 12px 16px;
@@ -113,18 +106,18 @@
             flex-direction: column;
             gap: 10px;
             width: 260px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             text-align: right;
         }
         body.light-theme .compact-contact-card {
-            background: rgba(248, 250, 252, 0.85);
+            background: #f8fafc;
         }
 
         .contact-line {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             direction: rtl;
         }
 
@@ -146,7 +139,7 @@
         .contact-line a, .contact-line span {
             color: var(--text-primary);
             text-decoration: none;
-            font-weight: 700;
+            font-weight: 600;
         }
         .contact-line a:hover { color: var(--neon-orange); }
 
@@ -156,35 +149,27 @@
             margin-top: 4px;
         }
 
-        @keyframes liquidGradient {
-            0% { background-position: 0% 50%; text-shadow: 0 0 10px rgba(255,85,0,0.5); }
-            50% { background-position: 100% 50%; text-shadow: 0 0 25px rgba(0,245,214,0.7), 0 0 10px rgba(255,85,0,0.5); }
-            100% { background-position: 0% 50%; text-shadow: 0 0 10px rgba(255,85,0,0.5); }
-        }
-        
-        @keyframes floatTitle {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-6px) scale(1.02); }
-        }
-
-        .showcase-header { 
-            text-align: center; 
-            margin-bottom: 50px; 
-            padding-top: 20px; 
+        @keyframes dynamicLogoAnim {
+            0%, 100% { 
+                transform: translateY(0) scale(1); 
+                text-shadow: 0 0 10px var(--neon-orange-glow), 0 0 20px rgba(255, 85, 0, 0.2); 
+            }
+            50% { 
+                transform: translateY(-8px) scale(1.03); 
+                text-shadow: 0 0 25px var(--neon-orange), 0 0 15px var(--accent-mint); 
+            }
         }
 
+        .showcase-header { text-align: center; margin-bottom: 40px; padding-top: 10px; }
         .showcase-header h1 {
-            font-family: 'Cairo', sans-serif;
-            font-size: 4.5rem;
+            font-size: 3.8rem;
             font-weight: 900;
-            background: linear-gradient(to right, #ff5500, #ff9900, #00f5d4, #ff5500);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: liquidGradient 5s ease infinite, floatTitle 4s ease-in-out infinite;
+            color: var(--neon-orange);
+            -webkit-text-stroke: 1px #000000;
             letter-spacing: 1px;
             display: inline-block;
-            will-change: transform, text-shadow, background-position;
+            animation: dynamicLogoAnim 4.5s infinite ease-in-out;
+            will-change: transform, text-shadow;
         }
 
         .search-filter-container {
@@ -192,8 +177,6 @@
             margin: 0 auto 40px auto;
             display: flex;
             gap: 20px;
-            position: relative;
-            z-index: 10;
         }
 
         .search-box, .filter-box { position: relative; flex: 1; }
@@ -213,11 +196,9 @@
             border-radius: 14px;
             color: var(--text-primary);
             font-size: 1rem;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 600;
+            font-family: 'Tajawal', sans-serif;
             outline: none;
             text-align: right;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .filter-box select {
@@ -230,7 +211,7 @@
 
         .search-box input:focus, .filter-box select:focus {
             border-color: var(--neon-orange);
-            box-shadow: 0 0 15px var(--neon-orange-glow);
+            box-shadow: 0 0 12px var(--neon-orange-glow);
         }
 
         .catalog-grid {
@@ -254,9 +235,9 @@
         }
 
         .dynamic-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-6px);
             border-color: var(--neon-orange);
-            box-shadow: 0 12px 30px rgba(255, 85, 0, 0.2);
+            box-shadow: 0 8px 25px rgba(255, 85, 0, 0.15);
         }
 
         .image-canvas {
@@ -288,7 +269,10 @@
             transition: opacity 0.4s ease-in-out;
         }
 
-        .slider-slide.active { opacity: 1; z-index: 2; }
+        .slider-slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
 
         .slider-slide img {
             width: 100%;
@@ -351,7 +335,7 @@
             color: var(--neon-orange);
             padding: 4px 12px;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
         }
 
@@ -364,7 +348,7 @@
         }
 
         .card-details h3 {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
             margin-bottom: 8px;
             color: var(--text-primary);
@@ -373,17 +357,16 @@
         }
 
         .card-details .product-code {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
             margin-bottom: 8px;
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .card-details .box-info {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--accent-mint);
             margin-bottom: 10px;
-            font-weight: 600;
         }
 
         .meta-pricing {
@@ -396,9 +379,9 @@
             direction: rtl;
         }
 
-        .price-label { font-size: 0.85rem; color: var(--text-secondary); }
-        .price-tag { font-size: 1.4rem; font-weight: 800; color: #ff2a5f; }
-        .currency { font-size: 0.8rem; font-weight: 600; margin-right: 3px; color: var(--text-secondary); }
+        .price-label { font-size: 0.8rem; color: var(--text-secondary); }
+        .price-tag { font-size: 1.3rem; font-weight: 800; color: #ff2a5f; }
+        .currency { font-size: 0.75rem; font-weight: normal; margin-right: 3px; color: var(--text-secondary); }
 
         .neon-order-btn {
             display: flex;
@@ -408,15 +391,15 @@
             background: linear-gradient(135deg, #00f5d4 0%, #00bfa5 100%);
             color: #050608;
             text-decoration: none;
-            padding: 10px 16px;
+            padding: 11px;
             border-radius: 10px;
             font-weight: 700;
             font-size: 0.95rem;
+            margin-top: 15px;
             box-shadow: 0 4px 12px rgba(0, 245, 214, 0.2);
         }
         .neon-order-btn:hover {
             box-shadow: 0 0 18px rgba(0, 245, 214, 0.5);
-            transform: scale(1.05);
         }
 
         body.light-theme .neon-order-btn {
@@ -480,7 +463,7 @@
 
         .modal-content h2 { margin-bottom: 20px; font-size: 1.5rem; color: var(--neon-orange); text-align: center; }
         .form-group { margin-bottom: 15px; text-align: right; }
-        .form-group label { display: block; margin-bottom: 6px; font-size: 0.95rem; color: var(--text-secondary); font-weight: 600; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: var(--text-secondary); }
         
         .form-group input {
             width: 100%;
@@ -489,7 +472,7 @@
             border: 1px solid var(--glass-border);
             border-radius: 10px;
             color: var(--text-primary);
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Tajawal', sans-serif;
             outline: none;
             text-align: right;
         }
@@ -547,12 +530,15 @@
             border: 1px solid var(--glass-border);
             border-radius: 6px;
             color: var(--text-primary);
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Tajawal', sans-serif;
             font-size: 0.85rem;
             text-align: left;
         }
 
-        .editable-table input:focus { border-color: var(--neon-orange); outline: none; }
+        .editable-table input:focus {
+            border-color: var(--neon-orange);
+            outline: none;
+        }
 
         .admin-actions-bar {
             display: flex;
@@ -568,20 +554,26 @@
             padding: 80px;
             color: var(--text-secondary);
             font-size: 1.2rem;
-            font-family: 'Cairo', sans-serif;
         }
         .skeleton-loader i { color: var(--neon-orange); margin-bottom: 15px; }
 
         @media (max-width: 1400px) { .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-        @media (max-width: 1100px) { .catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (max-width: 1100px) { 
+            .catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } 
+        }
         @media (max-width: 768px) {
-            .top-navbar { flex-direction: column; gap: 15px; align-items: center; margin-top: 20px; }
+            .top-navbar { flex-direction: column; gap: 15px; align-items: center; }
             .left-control-panel { align-items: center; }
             .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
             .search-filter-container { flex-direction: column; gap: 10px; }
-            .showcase-header { margin-top: 260px; } /* مسافة عشان المحتوى ما يتغطاش بالكونتينر الثابت */
-            .showcase-header h1 { font-size: 2.8rem; }
-            .compact-contact-card { position: fixed; width: calc(100% - 40px); left: 20px; top: 180px; } /* موقع الكونتينر تحت الناف بار في الموبايل */
+            .showcase-header h1 { font-size: 2.3rem; }
+            
+            .compact-contact-card {
+                position: static;
+                width: 100%;
+                max-width: 320px;
+                margin: 0 auto 20px auto;
+            }
         }
         @media (max-width: 480px) { .catalog-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); } }
     </style>
@@ -617,6 +609,7 @@
                 <i class="fas fa-user-shield"></i> أدمن
             </button>
         </div>
+
         <div class="right-control-panel">
             <button class="action-btn" id="theme-toggle" onclick="toggleThemeMode()">
                 <i class="fas fa-moon"></i> <span>الوضع الداكن</span>
@@ -647,7 +640,6 @@
         </div>
     </div>
 
-    <!-- نافذة تحكم الأدمن -->
     <div class="admin-modal" id="adminAuthWindow">
         <div class="modal-content" id="modalContentWrapper">
             <button class="close-modal" onclick="closeAdminGateway()"><i class="fas fa-times"></i></button>
@@ -673,13 +665,13 @@
                 
                 <div class="admin-actions-bar">
                     <button class="action-btn" style="background: #27ae60; color: #fff; border:none;" onclick="saveTableChangesToServer()">
-                        <i class="fas fa-cloud-upload-alt"></i> حفظ التعديلات
+                        <i class="fas fa-cloud-upload-alt"></i> حفظ التعديلات من الجدول
                     </button>
                     <button class="action-btn" style="background: #2980b9; color: #fff; border:none;" onclick="downloadCurrentCatalogAsExcel()">
-                        <i class="fas fa-download"></i> تحميل الشيت
+                        <i class="fas fa-download"></i> تحميل الشيت الحالي (Excel)
                     </button>
                     <button class="action-btn" style="background: #8e44ad; color: #fff; border:none;" onclick="addNewRowToEditableTable()">
-                        <i class="fas fa-plus"></i> إضافة منتج
+                        <i class="fas fa-plus"></i> إضافة منتج جديد
                     </button>
                 </div>
 
@@ -801,7 +793,6 @@
             }
         }
 
-        // تكملة وتنسيق دالة بناء المنتجات التي كانت مقطوعة
         function renderCatalogGrid(productsList) {
             const container = document.getElementById('catalog-container');
             let htmlBuilder = ''; 
@@ -813,6 +804,7 @@
                 const category = product['التصنيف'] || product.category || 'عام';
                 const boxQty = product['الكمية بالكرتونة'] || product.boxQty || 'غير محدد';
                 
+                // جلب الصور واستبعاد الفارغة منها
                 const img1 = product['الصورة 1'] || '';
                 const img2 = product['الصورة 2'] || '';
                 const img3 = product['الصورة 3'] || '';
@@ -849,44 +841,39 @@
                 htmlBuilder += `
                     <div class="dynamic-card" id="${cardId}" data-current-slide="0" data-total-slides="${images.length}">
                         <div class="image-canvas">
-                            <div class="slider-wrapper">
-                                ${slidesHtml}
-                            </div>
+                            <div class="slider-wrapper">${slidesHtml}</div>
                             ${arrowsHtml}
-                            <div class="slider-dots">
-                                ${dotsHtml}
-                            </div>
+                            <div class="slider-dots">${dotsHtml}</div>
                         </div>
                         <div class="category-badge">${category}</div>
                         <div class="card-details">
+                            <div class="product-code">كود: ${code}</div>
                             <h3>${title}</h3>
-                            <div class="product-code">كود المنتج: ${code}</div>
-                            <div class="box-info"><i class="fas fa-box-open"></i> الكمية بالكرتونة: ${boxQty}</div>
+                            <div class="box-info">الكمية بالكرتونة: ${boxQty}</div>
                             <div class="meta-pricing">
-                                <div>
-                                    <span class="price-tag">${price}</span>
-                                    <span class="currency">ج.م</span>
-                                </div>
-                                <a href="${waLink}" target="_blank" class="neon-order-btn">
-                                    <i class="fab fa-whatsapp"></i> طلب
-                                </a>
+                                <span class="price-label">السعر</span>
+                                <div><span class="price-tag">${price}</span><span class="currency">ج.م</span></div>
                             </div>
+                            <a href="${waLink}" target="_blank" class="neon-order-btn">
+                                <i class="fab fa-whatsapp"></i> طلب المنتج
+                            </a>
                         </div>
                     </div>
                 `;
             });
-            container.innerHTML = htmlBuilder;
+
+            container.innerHTML = htmlBuilder || '<div class="skeleton-loader">لا يوجد منتجات متاحة.</div>';
         }
 
-        // تكملة الدوال الإدارية وعملية البحث لتشغيل الواجهة بالكامل
+        // Search & Filter functionality
         function triggerLiveSearchFilter() {
             const searchTerm = document.getElementById('catalogSearchInput').value.toLowerCase();
             const categoryFilter = document.getElementById('categorySelectorDropdown').value;
             
-            const filteredProducts = localProductsMasterArray.filter(product => {
+            const filtered = localProductsMasterArray.filter(product => {
                 const title = (product['اسم المنتج'] || product.title || '').toLowerCase();
                 const code = (product['كود المنتج'] || product.code || '').toLowerCase();
-                const category = product['التصنيف'] || product.category || 'عام';
+                const category = product['التصنيف'] || product.category || '';
                 
                 const matchesSearch = title.includes(searchTerm) || code.includes(searchTerm);
                 const matchesCategory = categoryFilter === 'ALL' || category === categoryFilter;
@@ -894,13 +881,14 @@
                 return matchesSearch && matchesCategory;
             });
             
-            if(filteredProducts.length > 0) {
-                renderCatalogGrid(filteredProducts);
+            if (filtered.length === 0) {
+                document.getElementById('catalog-container').innerHTML = '<div class="skeleton-loader">لا توجد منتجات مطابقة للبحث.</div>';
             } else {
-                document.getElementById('catalog-container').innerHTML = '<div class="skeleton-loader"><i class="fas fa-search"></i><div>لا توجد منتجات مطابقة للبحث.</div></div>';
+                renderCatalogGrid(filtered);
             }
         }
 
+        // Admin functionality
         function openAdminGateway() {
             document.getElementById('adminAuthWindow').classList.add('active');
         }
@@ -909,99 +897,189 @@
             document.getElementById('adminAuthWindow').classList.remove('active');
         }
 
-        function validateAdminCredentials() {
-            // بيانات دخول افتراضية كمثال، يمكنك تعديلها
+        async function validateAdminCredentials() {
             const user = document.getElementById('adminUserField').value;
             const pass = document.getElementById('adminPasswordField').value;
-            if(user === 'admin' && pass === 'admin') { 
-                document.getElementById('loginFormSection').style.display = 'none';
-                document.getElementById('adminActionSection').style.display = 'block';
-                document.getElementById('modalContentWrapper').classList.add('wide-panel');
-                renderEditableTable();
-            } else {
-                alert('بيانات الدخول غير صحيحة');
+            const btn = document.querySelector('#loginFormSection .neon-order-btn');
+            
+            if (!user || !pass) {
+                alert('يرجى إدخال اسم المستخدم وكلمة المرور');
+                return;
+            }
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch(sheetWebUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: "loginVerification", username: user, password: pass })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === "success") {
+                    document.getElementById('loginFormSection').style.display = 'none';
+                    document.getElementById('adminActionSection').style.display = 'block';
+                    document.getElementById('modalContentWrapper').classList.add('wide-panel');
+                    populateEditableTable(localProductsMasterArray);
+                } else {
+                    alert(result.message || 'بيانات الدخول غير صحيحة');
+                }
+            } catch (error) {
+                alert('حدث خطأ في الاتصال أثناء التحقق');
+            } finally {
+                btn.innerHTML = 'دخول';
+                btn.disabled = false;
             }
         }
 
-        function renderEditableTable() {
+        function populateEditableTable(dataArray) {
             const tbody = document.getElementById('editableTableBody');
-            let rowsHtml = '';
-            localProductsMasterArray.forEach((product, idx) => {
-                rowsHtml += `
-                    <tr>
-                        <td><input type="text" value="${product['اسم المنتج'] || product.title || ''}"></td>
-                        <td><input type="text" value="${product['كود المنتج'] || product.code || ''}"></td>
-                        <td><input type="text" value="${product['التصنيف'] || product.category || ''}"></td>
-                        <td><input type="text" value="${product['الكمية بالكرتونة'] || product.boxQty || ''}"></td>
-                        <td><input type="text" value="${product['سعر القطعة'] || product.price || ''}"></td>
-                        <td><input type="text" value="${product['الصورة 1'] || ''}"></td>
-                        <td><input type="text" value="${product['الصورة 2'] || ''}"></td>
-                        <td><input type="text" value="${product['الصورة 3'] || ''}"></td>
-                        <td><input type="text" value="${product['الصورة 4'] || ''}"></td>
-                        <td><button onclick="this.closest('tr').remove()" class="action-btn" style="color:#fff; background:#ff2a5f; padding: 6px;"><i class="fas fa-trash"></i></button></td>
-                    </tr>
+            tbody.innerHTML = '';
+            
+            if (!dataArray || dataArray.length === 0) {
+                addNewRowToEditableTable();
+                return;
+            }
+            
+            dataArray.forEach((product, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" value="${product['اسم المنتج'] || ''}" data-key="اسم المنتج"></td>
+                    <td><input type="text" value="${product['كود المنتج'] || ''}" data-key="كود المنتج"></td>
+                    <td><input type="text" value="${product['التصنيف'] || ''}" data-key="التصنيف"></td>
+                    <td><input type="text" value="${product['الكمية بالكرتونة'] || ''}" data-key="الكمية بالكرتونة"></td>
+                    <td><input type="text" value="${product['سعر القطعة'] || ''}" data-key="سعر القطعة"></td>
+                    <td><input type="text" value="${product['الصورة 1'] || ''}" data-key="الصورة 1"></td>
+                    <td><input type="text" value="${product['الصورة 2'] || ''}" data-key="الصورة 2"></td>
+                    <td><input type="text" value="${product['الصورة 3'] || ''}" data-key="الصورة 3"></td>
+                    <td><input type="text" value="${product['الصورة 4'] || ''}" data-key="الصورة 4"></td>
+                    <td><button onclick="this.closest('tr').remove()" style="color:red; background:none; border:none; cursor:pointer;"><i class="fas fa-trash"></i></button></td>
                 `;
+                tbody.appendChild(tr);
             });
-            tbody.innerHTML = rowsHtml;
         }
 
         function addNewRowToEditableTable() {
             const tbody = document.getElementById('editableTableBody');
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><input type="text" placeholder="اسم المنتج"></td>
-                <td><input type="text" placeholder="الكود"></td>
-                <td><input type="text" placeholder="التصنيف"></td>
-                <td><input type="text" placeholder="الكمية"></td>
-                <td><input type="text" placeholder="السعر"></td>
-                <td><input type="text" placeholder="صورة 1"></td>
-                <td><input type="text" placeholder="صورة 2"></td>
-                <td><input type="text" placeholder="صورة 3"></td>
-                <td><input type="text" placeholder="صورة 4"></td>
-                <td><button onclick="this.closest('tr').remove()" class="action-btn" style="color:#fff; background:#ff2a5f; padding: 6px;"><i class="fas fa-trash"></i></button></td>
+                <td><input type="text" value="" data-key="اسم المنتج"></td>
+                <td><input type="text" value="" data-key="كود المنتج"></td>
+                <td><input type="text" value="" data-key="التصنيف"></td>
+                <td><input type="text" value="" data-key="الكمية بالكرتونة"></td>
+                <td><input type="text" value="" data-key="سعر القطعة"></td>
+                <td><input type="text" value="" data-key="الصورة 1"></td>
+                <td><input type="text" value="" data-key="الصورة 2"></td>
+                <td><input type="text" value="" data-key="الصورة 3"></td>
+                <td><input type="text" value="" data-key="الصورة 4"></td>
+                <td><button onclick="this.closest('tr').remove()" style="color:red; background:none; border:none; cursor:pointer;"><i class="fas fa-trash"></i></button></td>
             `;
-            tbody.appendChild(tr);
+            tbody.insertBefore(tr, tbody.firstChild);
         }
 
-        function saveTableChangesToServer() {
-            alert('تم حفظ التعديلات محلياً. (يجب ربط هذا الزر بسكربت جوجل للحفظ الفعلي في الشيت)');
-        }
-
-        function downloadCurrentCatalogAsExcel() {
-            if (typeof XLSX === 'undefined') {
-                alert('الرجاء الانتظار حتى يتم تحميل مكتبة Excel.');
+        async function saveTableChangesToServer() {
+            const tbody = document.getElementById('editableTableBody');
+            const rows = tbody.querySelectorAll('tr');
+            const productsData = [];
+            
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                const product = {};
+                let hasData = false;
+                inputs.forEach(input => {
+                    const key = input.getAttribute('data-key');
+                    product[key] = input.value;
+                    if (input.value.trim() !== '') hasData = true;
+                });
+                if (hasData) {
+                    productsData.push(product);
+                }
+            });
+            
+            if (productsData.length === 0) {
+                alert('الجدول فارغ! يرجى إضافة بيانات أولاً.');
                 return;
             }
-            const ws = XLSX.utils.json_to_sheet(localProductsMasterArray);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "الكتالوج");
-            XLSX.writeFile(wb, "Awfarlak_Catalog.xlsx");
+
+            const statusMsg = document.getElementById('uploadStatusMessage');
+            statusMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري حفظ التعديلات...';
+            statusMsg.style.color = 'var(--neon-orange)';
+            
+            try {
+                const response = await fetch(sheetWebUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: "bulkDataUpdate", productsData: productsData })
+                });
+                const result = await response.json();
+                
+                if (result.status === "success") {
+                    statusMsg.innerHTML = '✅ ' + result.message;
+                    statusMsg.style.color = '#2ecc71';
+                    localProductsMasterArray = productsData;
+                    fetchAndRenderCatalog(); 
+                } else {
+                    statusMsg.innerHTML = '❌ خطأ: ' + result.message;
+                    statusMsg.style.color = '#e74c3c';
+                }
+            } catch (error) {
+                statusMsg.innerHTML = '❌ فشل الاتصال بالسيرفر أثناء الحفظ';
+                statusMsg.style.color = '#e74c3c';
+            }
         }
 
         function handleExcelFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
+            
+            const statusMsg = document.getElementById('uploadStatusMessage');
+            statusMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري قراءة ملف الإكسيل...';
+            statusMsg.style.color = 'var(--neon-orange)';
+            
             const reader = new FileReader();
             reader.onload = function(e) {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, {type: 'array'});
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
-                const json = XLSX.utils.sheet_to_json(worksheet);
-                if(json.length > 0) {
-                    localProductsMasterArray = json;
-                    renderEditableTable();
-                    renderCatalogGrid(localProductsMasterArray);
-                    document.getElementById('uploadStatusMessage').innerText = 'تم رفع الملف وتحديث البيانات بنجاح!';
-                    document.getElementById('uploadStatusMessage').style.color = '#27ae60';
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+                    
+                    if (json && json.length > 0) {
+                        populateEditableTable(json);
+                        statusMsg.innerHTML = '✅ تم قراءة الملف بنجاح! راجع الجدول بالأسفل ثم اضغط "حفظ التعديلات".';
+                        statusMsg.style.color = '#2ecc71';
+                    } else {
+                        statusMsg.innerHTML = '❌ الملف فارغ أو الهيكل غير صحيح.';
+                        statusMsg.style.color = '#e74c3c';
+                    }
+                } catch (error) {
+                    statusMsg.innerHTML = '❌ حدث خطأ أثناء معالجة الملف.';
+                    statusMsg.style.color = '#e74c3c';
                 }
             };
             reader.readAsArrayBuffer(file);
+            event.target.value = ''; 
         }
 
-        window.onload = () => {
+        function downloadCurrentCatalogAsExcel() {
+            if (!localProductsMasterArray || localProductsMasterArray.length === 0) {
+                alert('لا توجد بيانات متاحة لتحميلها.');
+                return;
+            }
+            
+            const worksheet = XLSX.utils.json_to_sheet(localProductsMasterArray);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+            
+            XLSX.writeFile(workbook, "Awfarlak_Catalog_Backup.xlsx");
+        }
+
+        // التهيئة الأولية عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
             fetchAndRenderCatalog();
-        };
+        });
     </script>
 </body>
 </html>
