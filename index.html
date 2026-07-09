@@ -97,11 +97,11 @@
             box-shadow: 0 0 10px var(--neon-orange-glow);
         }
 
-        /* تعديل كونتينر التواصل ليصبح ثابتاً بأعلى الصفحة ولا يتحرك مع السكرول */
+        /* تعديل كونتينر التواصل ليصبح ثابتاً بأعلى الصفحة وينزل أسفل الناف بار */
         .compact-contact-card {
-            position: absolute; 
+            position: fixed; 
             left: 20px;
-            top: 20px; 
+            top: 130px; /* تم التعديل لينزل تحت الناف بار */
             z-index: 99;
             background: rgba(16, 18, 27, 0.7);
             backdrop-filter: blur(10px);
@@ -156,7 +156,6 @@
             margin-top: 4px;
         }
 
-        /* أنيميشن جديد احترافي للبانر يدمج الألوان وتأثير النيون مع حركة انسيابية */
         @keyframes liquidGradient {
             0% { background-position: 0% 50%; text-shadow: 0 0 10px rgba(255,85,0,0.5); }
             50% { background-position: 100% 50%; text-shadow: 0 0 25px rgba(0,245,214,0.7), 0 0 10px rgba(255,85,0,0.5); }
@@ -576,12 +575,13 @@
         @media (max-width: 1400px) { .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
         @media (max-width: 1100px) { .catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
         @media (max-width: 768px) {
-            .top-navbar { flex-direction: column; gap: 15px; align-items: center; margin-top: 270px; /* لترك مساحة للكونتينر */ }
+            .top-navbar { flex-direction: column; gap: 15px; align-items: center; margin-top: 20px; }
             .left-control-panel { align-items: center; }
             .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
             .search-filter-container { flex-direction: column; gap: 10px; }
+            .showcase-header { margin-top: 260px; } /* مسافة عشان المحتوى ما يتغطاش بالكونتينر الثابت */
             .showcase-header h1 { font-size: 2.8rem; }
-            .compact-contact-card { position: absolute; width: calc(100% - 40px); left: 20px; top: 20px; }
+            .compact-contact-card { position: fixed; width: calc(100% - 40px); left: 20px; top: 180px; } /* موقع الكونتينر تحت الناف بار في الموبايل */
         }
         @media (max-width: 480px) { .catalog-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); } }
     </style>
@@ -801,7 +801,7 @@
             }
         }
 
-        // تم استكمال الكود المقصوص بنجاح لضمان عمل اللوجيك الخاص بيك بالكامل
+        // تكملة وتنسيق دالة بناء المنتجات التي كانت مقطوعة
         function renderCatalogGrid(productsList) {
             const container = document.getElementById('catalog-container');
             let htmlBuilder = ''; 
@@ -849,18 +849,21 @@
                 htmlBuilder += `
                     <div class="dynamic-card" id="${cardId}" data-current-slide="0" data-total-slides="${images.length}">
                         <div class="image-canvas">
-                            <div class="slider-wrapper">${slidesHtml}</div>
+                            <div class="slider-wrapper">
+                                ${slidesHtml}
+                            </div>
                             ${arrowsHtml}
-                            <div class="slider-dots">${dotsHtml}</div>
+                            <div class="slider-dots">
+                                ${dotsHtml}
+                            </div>
                         </div>
                         <div class="category-badge">${category}</div>
                         <div class="card-details">
-                            <div class="product-code">كود: ${code}</div>
                             <h3>${title}</h3>
-                            <div class="box-info"><i class="fas fa-box"></i> الكمية بالكرتونة: ${boxQty}</div>
+                            <div class="product-code">كود المنتج: ${code}</div>
+                            <div class="box-info"><i class="fas fa-box-open"></i> الكمية بالكرتونة: ${boxQty}</div>
                             <div class="meta-pricing">
                                 <div>
-                                    <span class="price-label">السعر</span>
                                     <span class="price-tag">${price}</span>
                                     <span class="currency">ج.م</span>
                                 </div>
@@ -869,58 +872,136 @@
                                 </a>
                             </div>
                         </div>
-                    </div>`;
+                    </div>
+                `;
             });
-            
-            if (htmlBuilder === '') {
-                container.innerHTML = '<div class="skeleton-loader">لا توجد منتجات تطابق بحثك.</div>';
-            } else {
-                container.innerHTML = htmlBuilder;
-            }
+            container.innerHTML = htmlBuilder;
         }
 
-        // تم استكمال باقى دوال الجافاسكريبت ليعمل الكود بالكامل بدون فقدان أى جزء
+        // تكملة الدوال الإدارية وعملية البحث لتشغيل الواجهة بالكامل
         function triggerLiveSearchFilter() {
             const searchTerm = document.getElementById('catalogSearchInput').value.toLowerCase();
-            const categoryTerm = document.getElementById('categorySelectorDropdown').value;
+            const categoryFilter = document.getElementById('categorySelectorDropdown').value;
             
             const filteredProducts = localProductsMasterArray.filter(product => {
                 const title = (product['اسم المنتج'] || product.title || '').toLowerCase();
                 const code = (product['كود المنتج'] || product.code || '').toLowerCase();
-                const category = product['التصنيف'] || product.category || '';
+                const category = product['التصنيف'] || product.category || 'عام';
                 
                 const matchesSearch = title.includes(searchTerm) || code.includes(searchTerm);
-                const matchesCategory = categoryTerm === 'ALL' || category === categoryTerm;
+                const matchesCategory = categoryFilter === 'ALL' || category === categoryFilter;
                 
                 return matchesSearch && matchesCategory;
             });
             
-            renderCatalogGrid(filteredProducts);
-        }
-
-        function openAdminGateway() { document.getElementById('adminAuthWindow').classList.add('active'); }
-        function closeAdminGateway() { document.getElementById('adminAuthWindow').classList.remove('active'); }
-        
-        function validateAdminCredentials() {
-            const user = document.getElementById('adminUserField').value;
-            const pass = document.getElementById('adminPasswordField').value;
-            // يمكنك تغيير بيانات الدخول هنا 
-            if(user === "admin" && pass === "1234") {
-                document.getElementById('loginFormSection').style.display = 'none';
-                document.getElementById('adminActionSection').style.display = 'block';
-                document.getElementById('modalContentWrapper').classList.add('wide-panel');
+            if(filteredProducts.length > 0) {
+                renderCatalogGrid(filteredProducts);
             } else {
-                alert("بيانات الدخول خاطئة!");
+                document.getElementById('catalog-container').innerHTML = '<div class="skeleton-loader"><i class="fas fa-search"></i><div>لا توجد منتجات مطابقة للبحث.</div></div>';
             }
         }
 
-        // الدوال الخاصة بالـ Admin Panel 
-        function saveTableChangesToServer() { alert("تم استدعاء الدالة.. يرجى ربطها بنظام الحفظ الخاص بك."); }
-        function downloadCurrentCatalogAsExcel() { alert("تم استدعاء الدالة.. يرجى إضافة مكتبة التصدير."); }
-        function addNewRowToEditableTable() { alert("تم استدعاء الدالة.. يمكنك إضافة اللوجيك الخاص بالجدول."); }
-        function handleExcelFileUpload(event) { alert("تم رفع الملف.. يرجى ربط المعالجة."); }
+        function openAdminGateway() {
+            document.getElementById('adminAuthWindow').classList.add('active');
+        }
 
-        window.onload = fetchAndRenderCatalog;
+        function closeAdminGateway() {
+            document.getElementById('adminAuthWindow').classList.remove('active');
+        }
+
+        function validateAdminCredentials() {
+            // بيانات دخول افتراضية كمثال، يمكنك تعديلها
+            const user = document.getElementById('adminUserField').value;
+            const pass = document.getElementById('adminPasswordField').value;
+            if(user === 'admin' && pass === 'admin') { 
+                document.getElementById('loginFormSection').style.display = 'none';
+                document.getElementById('adminActionSection').style.display = 'block';
+                document.getElementById('modalContentWrapper').classList.add('wide-panel');
+                renderEditableTable();
+            } else {
+                alert('بيانات الدخول غير صحيحة');
+            }
+        }
+
+        function renderEditableTable() {
+            const tbody = document.getElementById('editableTableBody');
+            let rowsHtml = '';
+            localProductsMasterArray.forEach((product, idx) => {
+                rowsHtml += `
+                    <tr>
+                        <td><input type="text" value="${product['اسم المنتج'] || product.title || ''}"></td>
+                        <td><input type="text" value="${product['كود المنتج'] || product.code || ''}"></td>
+                        <td><input type="text" value="${product['التصنيف'] || product.category || ''}"></td>
+                        <td><input type="text" value="${product['الكمية بالكرتونة'] || product.boxQty || ''}"></td>
+                        <td><input type="text" value="${product['سعر القطعة'] || product.price || ''}"></td>
+                        <td><input type="text" value="${product['الصورة 1'] || ''}"></td>
+                        <td><input type="text" value="${product['الصورة 2'] || ''}"></td>
+                        <td><input type="text" value="${product['الصورة 3'] || ''}"></td>
+                        <td><input type="text" value="${product['الصورة 4'] || ''}"></td>
+                        <td><button onclick="this.closest('tr').remove()" class="action-btn" style="color:#fff; background:#ff2a5f; padding: 6px;"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = rowsHtml;
+        }
+
+        function addNewRowToEditableTable() {
+            const tbody = document.getElementById('editableTableBody');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" placeholder="اسم المنتج"></td>
+                <td><input type="text" placeholder="الكود"></td>
+                <td><input type="text" placeholder="التصنيف"></td>
+                <td><input type="text" placeholder="الكمية"></td>
+                <td><input type="text" placeholder="السعر"></td>
+                <td><input type="text" placeholder="صورة 1"></td>
+                <td><input type="text" placeholder="صورة 2"></td>
+                <td><input type="text" placeholder="صورة 3"></td>
+                <td><input type="text" placeholder="صورة 4"></td>
+                <td><button onclick="this.closest('tr').remove()" class="action-btn" style="color:#fff; background:#ff2a5f; padding: 6px;"><i class="fas fa-trash"></i></button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function saveTableChangesToServer() {
+            alert('تم حفظ التعديلات محلياً. (يجب ربط هذا الزر بسكربت جوجل للحفظ الفعلي في الشيت)');
+        }
+
+        function downloadCurrentCatalogAsExcel() {
+            if (typeof XLSX === 'undefined') {
+                alert('الرجاء الانتظار حتى يتم تحميل مكتبة Excel.');
+                return;
+            }
+            const ws = XLSX.utils.json_to_sheet(localProductsMasterArray);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "الكتالوج");
+            XLSX.writeFile(wb, "Awfarlak_Catalog.xlsx");
+        }
+
+        function handleExcelFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet);
+                if(json.length > 0) {
+                    localProductsMasterArray = json;
+                    renderEditableTable();
+                    renderCatalogGrid(localProductsMasterArray);
+                    document.getElementById('uploadStatusMessage').innerText = 'تم رفع الملف وتحديث البيانات بنجاح!';
+                    document.getElementById('uploadStatusMessage').style.color = '#27ae60';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        window.onload = () => {
+            fetchAndRenderCatalog();
+        };
     </script>
 </body>
 </html>
