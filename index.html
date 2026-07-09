@@ -93,7 +93,6 @@
             box-shadow: 0 0 10px var(--neon-orange-glow);
         }
 
-        /* حاوية التواصل منفصلة ومثبتة جهة اليسار */
         .compact-contact-card {
             position: fixed;
             left: 20px;
@@ -423,11 +422,12 @@
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            padding-top: 80px;
+            padding-top: 40px;
             z-index: 999;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
+            overflow-y: auto;
         }
 
         .admin-modal.active { opacity: 1; pointer-events: auto; }
@@ -441,6 +441,12 @@
             max-width: 450px;
             position: relative;
             box-shadow: 0 10px 35px rgba(0,0,0,0.6);
+            transition: max-width 0.4s ease;
+        }
+
+        .modal-content.wide-panel {
+            max-width: 1400px;
+            width: 95%;
         }
 
         .close-modal {
@@ -452,6 +458,7 @@
             color: var(--text-secondary);
             font-size: 1.2rem;
             cursor: pointer;
+            z-index: 10;
         }
 
         .modal-content h2 { margin-bottom: 20px; font-size: 1.5rem; color: var(--neon-orange); text-align: center; }
@@ -475,13 +482,69 @@
         
         .file-drop-zone {
             border: 2px dashed var(--glass-border);
-            padding: 30px;
+            padding: 20px;
             border-radius: 12px;
             background: var(--input-bg);
             cursor: pointer;
             margin-bottom: 15px;
         }
         .file-drop-zone:hover { border-color: var(--neon-orange); }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        .editable-table {
+            width: 100%;
+            border-collapse: collapse;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .editable-table th, .editable-table td {
+            padding: 10px;
+            border: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .editable-table th {
+            background-color: var(--input-bg);
+            color: var(--neon-orange);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .editable-table input {
+            width: 100%;
+            padding: 6px 10px;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.85rem;
+        }
+
+        .editable-table input:focus {
+            border-color: var(--neon-orange);
+            outline: none;
+        }
+
+        .admin-actions-bar {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
 
         .skeleton-loader {
             text-align: center;
@@ -503,7 +566,6 @@
             .search-filter-container { flex-direction: column; gap: 10px; }
             .showcase-header h1 { font-size: 2.3rem; }
             
-            /* تعديل انسيابي لحاوية التواصل في الموبايل ليصبح أسفل الهيدر */
             .compact-contact-card {
                 position: static;
                 width: 100%;
@@ -516,7 +578,6 @@
 </head>
 <body>
 
-    <!-- حاوية التواصل منفصلة وفي الجانب الأيسر للشاشة -->
     <div class="compact-contact-card">
         <div class="contact-line">
             <i class="fas fa-phone-alt"></i>
@@ -578,7 +639,7 @@
     </div>
 
     <div class="admin-modal" id="adminAuthWindow">
-        <div class="modal-content">
+        <div class="modal-content" id="modalContentWrapper">
             <button class="close-modal" onclick="closeAdminGateway()"><i class="fas fa-times"></i></button>
             
             <div id="loginFormSection">
@@ -595,16 +656,51 @@
             </div>
 
             <div id="adminActionSection" class="upload-panel">
-                <h2>لوحة تحديث البيانات </h2>
+                <h2>لوحة التحكم وتحديث البيانات</h2>
                 <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:15px;">
-                    قم برفع ملف الـ Excel المحدث وسيتم تحديث فوراً وبنفس الترتيب.
+                    يمكنك تعديل المنتجات مباشرة من الجدول بالأسفل وحفظها، أو تحميل شيت الاكسيل للتعديل عليه وإعادة رفعه.
                 </p>
+                
+                <div class="admin-actions-bar">
+                    <button class="action-btn" style="background: #27ae60; color: #fff; border:none;" onclick="saveTableChangesToServer()">
+                        <i class="fas fa-cloud-upload-alt"></i> حفظ التعديلات من الجدول
+                    </button>
+                    <button class="action-btn" style="background: #2980b9; color: #fff; border:none;" onclick="downloadCurrentCatalogAsExcel()">
+                        <i class="fas fa-download"></i> تحميل الشيت الحالي (Excel)
+                    </button>
+                    <button class="action-btn" style="background: #8e44ad; color: #fff; border:none;" onclick="addNewRowToEditableTable()">
+                        <i class="fas fa-plus"></i> إضافة منتج جديد
+                    </button>
+                </div>
+
                 <div class="file-drop-zone" onclick="document.getElementById('excelFileInput').click()">
                     <i class="fas fa-file-excel fa-3x" style="color: #27ae60; margin-bottom: 10px;"></i>
-                    <div>اضغط هنا لرفع ملف</div>
+                    <div>اضغط هنا لرفع ملف Excel محدث بالكامل</div>
                     <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display:none;" onchange="handleExcelFileUpload(event)">
                 </div>
-                <div id="uploadStatusMessage" style="font-size:0.9rem; font-weight:700; margin-top:10px;"></div>
+
+                <div id="uploadStatusMessage" style="font-size:0.9rem; font-weight:700; margin-top:10px; margin-bottom: 10px;"></div>
+
+                <div class="table-responsive">
+                    <table class="editable-table">
+                        <thead>
+                            <tr>
+                                <th>اسم المنتج</th>
+                                <th>كود المنتج</th>
+                                <th>التصنيف</th>
+                                <th>الكمية بالكرتونة</th>
+                                <th>سعر القطعة</th>
+                                <th>الصورة 1</th>
+                                <th>الصورة 2</th>
+                                <th>الصورة 3</th>
+                                <th>الصورة 4</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="editableTableBody">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -704,13 +800,19 @@
                 const price = product['سعر القطعة'] || product.price || '0';
                 const code = product['كود المنتج'] || product.code || '';
                 const category = product['التصنيف'] || product.category || 'عام';
-                const boxQty = product['الكمية داخل الكرتونة'] || '';
+                const boxQty = product['الكمية داخل الكرتونة'] || product['الكمية بالكرتونة'] || '';
 
+                // حل مشكلة الصور: استدعاء المفاتيح بكل الاحتمالات (تاء مربوطة أو هاء)
                 const imagesArray = [];
-                if (product['الصورة']) imagesArray.push(product['الصورة']);
-                if (product['الصوره 2']) imagesArray.push(product['الصوره 2']);
-                if (product['الصوره 3']) imagesArray.push(product['الصوره 3']);
-                if (product['الصوره 4']) imagesArray.push(product['الصوره 4']);
+                const img1 = product['الصورة 1'] || product['الصورة'] || product['الصوره 1'] || product['الصوره'];
+                const img2 = product['الصورة 2'] || product['الصوره 2'];
+                const img3 = product['الصورة 3'] || product['الصوره 3'];
+                const img4 = product['الصورة 4'] || product['الصوره 4'];
+
+                if (img1) imagesArray.push(img1);
+                if (img2) imagesArray.push(img2);
+                if (img3) imagesArray.push(img3);
+                if (img4) imagesArray.push(img4);
                 
                 if (imagesArray.length === 0) {
                     imagesArray.push('https://via.placeholder.com/400x300/161925/ffffff?text=No+Image');
@@ -750,114 +852,179 @@
                         <span class="category-badge">${category}</span>
                         <div class="card-details">
                             <h3>${title}</h3>
-                            ${code ? `<div class="product-code">كود: ${code}</div>` : ''}
-                            ${boxQty ? `<div class="box-info"><i class="fas fa-box-open"></i> الكرتونة تحتوي على: ${boxQty} قطعة</div>` : ''}
+                            <div class="product-code">كود: ${code || 'غير متوفر'}</div>
+                            ${boxQty ? `<div class="box-info">📦 الكرتونة: ${boxQty}</div>` : ''}
                             <div class="meta-pricing">
-                                <span class="price-label">سعر القطعة</span>
-                                <div class="price-tag">${price}<span class="currency">EGP</span></div>
+                                <div>
+                                    <span class="price-label">السعر</span>
+                                    <div class="price-tag">${price} <span class="currency">ج.م</span></div>
+                                </div>
                             </div>
                             <a href="${whatsappUrl}" target="_blank" class="neon-order-btn">
-                                <i class="fab fa-whatsapp fa-lg"></i> إرسال طلب الشراء
+                                <i class="fab fa-whatsapp"></i> اطلب الآن
                             </a>
                         </div>
                     </div>
                 `;
-                container.insertAdjacentHTML('beforeend', cardHTML);
+                container.innerHTML += cardHTML;
             });
         }
 
         function triggerLiveSearchFilter() {
-            const searchQuery = document.getElementById('catalogSearchInput').value.toLowerCase().trim();
-            const selectedCategory = document.getElementById('categorySelectorDropdown').value;
+            const searchValue = document.getElementById('catalogSearchInput').value.toLowerCase();
+            const categoryValue = document.getElementById('categorySelectorDropdown').value;
 
-            const filteredResults = localProductsMasterArray.filter(product => {
+            const filteredData = localProductsMasterArray.filter(product => {
                 const title = (product['اسم المنتج'] || product.title || '').toLowerCase();
                 const code = (product['كود المنتج'] || product.code || '').toLowerCase();
-                const cat = product['التصنيف'] || product.category || 'عام';
+                const cat = product['التصنيف'] || product.category || '';
 
-                const matchesSearch = title.includes(searchQuery) || code.includes(searchQuery);
-                const matchesCategory = (selectedCategory === 'ALL') || (cat === selectedCategory);
+                const matchesSearch = title.includes(searchValue) || code.includes(searchValue);
+                const matchesCategory = (categoryValue === 'ALL' || cat === categoryValue);
 
                 return matchesSearch && matchesCategory;
             });
 
-            renderCatalogGrid(filteredResults);
+            renderCatalogGrid(filteredData);
         }
 
-        function openAdminGateway() { document.getElementById('adminAuthWindow').classList.add('active'); }
-        function closeAdminGateway() { document.getElementById('adminAuthWindow').classList.remove('active'); }
+        function openAdminGateway() {
+            document.getElementById('adminAuthWindow').classList.add('active');
+            document.getElementById('loginFormSection').style.display = 'block';
+            document.getElementById('adminActionSection').style.display = 'none';
+            document.getElementById('modalContentWrapper').classList.remove('wide-panel');
+        }
 
-        async function validateAdminCredentials() {
+        function closeAdminGateway() {
+            document.getElementById('adminAuthWindow').classList.remove('active');
+        }
+
+        function validateAdminCredentials() {
             const user = document.getElementById('adminUserField').value;
             const pass = document.getElementById('adminPasswordField').value;
-            if(!user || !pass) { alert("برجاء إدخال اسم المستخدم وكلمة المرور أولاً!"); return; }
-
-            try {
-                const response = await fetch(sheetWebUrl, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'loginVerification', username: user, password: pass })
-                });
-                const authResult = await response.json();
-                
-                if (authResult.success) {
-                    document.getElementById('loginFormSection').style.display = 'none';
-                    document.getElementById('adminActionSection').style.display = 'block';
-                } else {
-                    alert("بيانات الإدارة غير صحيحة، يرجى المحاولة مرة أخرى.");
-                }
-            } catch (error) {
-                console.error(error);
-                alert("حدث خطأ أثناء الاتصال بالسيرفر للتحقق من البيانات.");
+            
+            // بيانات الدخول الخاصة بالإدارة
+            if (user === 'admin' && pass === '123456') {
+                document.getElementById('loginFormSection').style.display = 'none';
+                document.getElementById('adminActionSection').style.display = 'block';
+                document.getElementById('modalContentWrapper').classList.add('wide-panel');
+                populateEditableTable();
+            } else {
+                alert('البيانات خاطئة! برجاء التأكد من اسم المستخدم وكلمة المرور.');
             }
         }
 
-        async function handleExcelFileUpload(event) {
+        function populateEditableTable() {
+            const tbody = document.getElementById('editableTableBody');
+            tbody.innerHTML = '';
+            
+            localProductsMasterArray.forEach((product, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" value="${product['اسم المنتج'] || ''}"></td>
+                    <td><input type="text" value="${product['كود المنتج'] || ''}"></td>
+                    <td><input type="text" value="${product['التصنيف'] || ''}"></td>
+                    <td><input type="text" value="${product['الكمية بالكرتونة'] || product['الكمية داخل الكرتونة'] || ''}"></td>
+                    <td><input type="text" value="${product['سعر القطعة'] || ''}"></td>
+                    <td><input type="text" value="${product['الصورة 1'] || product['الصورة'] || product['الصوره'] || ''}"></td>
+                    <td><input type="text" value="${product['الصورة 2'] || product['الصوره 2'] || ''}"></td>
+                    <td><input type="text" value="${product['الصورة 3'] || product['الصوره 3'] || ''}"></td>
+                    <td><input type="text" value="${product['الصورة 4'] || product['الصوره 4'] || ''}"></td>
+                    <td><button class="action-btn" style="background:#e74c3c; border:none; padding:6px 12px;" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addNewRowToEditableTable() {
+            const tbody = document.getElementById('editableTableBody');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" value=""></td>
+                <td><input type="text" value=""></td>
+                <td><input type="text" value=""></td>
+                <td><input type="text" value=""></td>
+                <td><input type="text" value=""></td>
+                <td><input type="text" value=""></td>
+                <td><input type="text" value=""></td>
+                <td><input type="text" value=""></td>
+                <td><input type="text" value=""></td>
+                <td><button class="action-btn" style="background:#e74c3c; border:none; padding:6px 12px;" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function saveTableChangesToServer() {
+            const tbody = document.getElementById('editableTableBody');
+            const rows = tbody.querySelectorAll('tr');
+            const newData = [];
+            
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                newData.push({
+                    'اسم المنتج': inputs[0].value,
+                    'كود المنتج': inputs[1].value,
+                    'التصنيف': inputs[2].value,
+                    'الكمية بالكرتونة': inputs[3].value,
+                    'سعر القطعة': inputs[4].value,
+                    'الصورة 1': inputs[5].value,
+                    'الصورة 2': inputs[6].value,
+                    'الصورة 3': inputs[7].value,
+                    'الصورة 4': inputs[8].value
+                });
+            });
+
+            // تحديث العرض المؤقت حتى يتم الربط مع السيرفر فعلياً
+            localProductsMasterArray = newData;
+            renderCatalogGrid(localProductsMasterArray);
+            
+            document.getElementById('uploadStatusMessage').style.color = '#2ecc71';
+            document.getElementById('uploadStatusMessage').innerText = 'تم تحديث البيانات وعرضها بنجاح (للربط النهائي يجب تفعيل دالة الرفع للسيرفر)';
+            
+            setTimeout(() => { closeAdminGateway(); }, 1500);
+        }
+
+        function downloadCurrentCatalogAsExcel() {
+            if (typeof XLSX === 'undefined') {
+                alert('مكتبة تحميل الإكسيل غير متوفرة حالياً.');
+                return;
+            }
+            const worksheet = XLSX.utils.json_to_sheet(localProductsMasterArray);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Catalog");
+            XLSX.writeFile(workbook, "Awfarlak_Catalog_Export.xlsx");
+        }
+
+        function handleExcelFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            const statusMsg = document.getElementById('uploadStatusMessage');
-            statusMsg.style.color = 'var(--text-primary)';
-            statusMsg.innerText = "جاري قراءة ملف الـ Excel وحساب المصفوفات...";
-
             const reader = new FileReader();
-            reader.onload = async function(e) {
+            reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
+                    const workbook = XLSX.read(data, {type: 'array'});
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-                    statusMsg.innerText = "جاري رفع البيانات وتحديث الكتالوج...";
-
-                    const response = await fetch(sheetWebUrl, {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'updateCatalogData', data: jsonData })
-                    });
-                    const uploadResult = await response.json();
-
-                    if (uploadResult.success) {
-                        statusMsg.style.color = '#2ecc71';
-                        statusMsg.innerText = "تم تحديث البيانات بنجاح!";
-                        setTimeout(() => {
-                            closeAdminGateway();
-                            fetchAndRenderCatalog();
-                        }, 1000);
-                    } else {
-                        statusMsg.style.color = '#e74c3c';
-                        statusMsg.innerText = "فشل تحديث البيانات في السيرفر.";
+                    const jsonFromExcel = XLSX.utils.sheet_to_json(worksheet);
+                    
+                    if (jsonFromExcel && jsonFromExcel.length > 0) {
+                        localProductsMasterArray = jsonFromExcel;
+                        populateEditableTable();
+                        renderCatalogGrid(localProductsMasterArray);
+                        document.getElementById('uploadStatusMessage').style.color = '#2ecc71';
+                        document.getElementById('uploadStatusMessage').innerText = 'تم قراءة الملف وتحديث الجدول بنجاح!';
                     }
-                } catch (error) {
-                    console.error(error);
-                    statusMsg.style.color = '#e74c3c';
-                    statusMsg.innerText = "حدث خطأ أثناء معالجة الملف المرفوع.";
+                } catch (err) {
+                    document.getElementById('uploadStatusMessage').style.color = '#e74c3c';
+                    document.getElementById('uploadStatusMessage').innerText = 'حدث خطأ أثناء قراءة الملف.';
+                    console.error(err);
                 }
             };
             reader.readAsArrayBuffer(file);
         }
 
-        // تشغيل جلب البيانات وعرض الكتالوج بمجرد تحميل الصفحة
-        window.onload = function() {
+        window.onload = () => {
             fetchAndRenderCatalog();
         };
     </script>
