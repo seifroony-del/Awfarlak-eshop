@@ -93,6 +93,7 @@
             box-shadow: 0 0 10px var(--neon-orange-glow);
         }
 
+        /* حاوية التواصل منفصلة ومثبتة جهة اليسار */
         .compact-contact-card {
             position: fixed;
             left: 20px;
@@ -422,12 +423,11 @@
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            padding-top: 40px;
+            padding-top: 80px;
             z-index: 999;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
-            overflow-y: auto;
         }
 
         .admin-modal.active { opacity: 1; pointer-events: auto; }
@@ -441,12 +441,6 @@
             max-width: 450px;
             position: relative;
             box-shadow: 0 10px 35px rgba(0,0,0,0.6);
-            transition: max-width 0.4s ease;
-        }
-
-        .modal-content.wide-panel {
-            max-width: 1400px;
-            width: 95%;
         }
 
         .close-modal {
@@ -458,7 +452,6 @@
             color: var(--text-secondary);
             font-size: 1.2rem;
             cursor: pointer;
-            z-index: 10;
         }
 
         .modal-content h2 { margin-bottom: 20px; font-size: 1.5rem; color: var(--neon-orange); text-align: center; }
@@ -482,69 +475,13 @@
         
         .file-drop-zone {
             border: 2px dashed var(--glass-border);
-            padding: 20px;
+            padding: 30px;
             border-radius: 12px;
             background: var(--input-bg);
             cursor: pointer;
             margin-bottom: 15px;
         }
         .file-drop-zone:hover { border-color: var(--neon-orange); }
-
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            margin-top: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--glass-border);
-            max-height: 450px;
-            overflow-y: auto;
-        }
-
-        .editable-table {
-            width: 100%;
-            border-collapse: collapse;
-            direction: rtl;
-            text-align: right;
-        }
-
-        .editable-table th, .editable-table td {
-            padding: 10px;
-            border: 1px solid var(--glass-border);
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-
-        .editable-table th {
-            background-color: var(--input-bg);
-            color: var(--neon-orange);
-            position: sticky;
-            top: 0;
-            z-index: 5;
-        }
-
-        .editable-table input {
-            width: 100%;
-            padding: 6px 10px;
-            background: var(--input-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-family: 'Tajawal', sans-serif;
-            font-size: 0.85rem;
-        }
-
-        .editable-table input:focus {
-            border-color: var(--neon-orange);
-            outline: none;
-        }
-
-        .admin-actions-bar {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
 
         .skeleton-loader {
             text-align: center;
@@ -566,6 +503,7 @@
             .search-filter-container { flex-direction: column; gap: 10px; }
             .showcase-header h1 { font-size: 2.3rem; }
             
+            /* تعديل انسيابي لحاوية التواصل في الموبايل ليصبح أسفل الهيدر */
             .compact-contact-card {
                 position: static;
                 width: 100%;
@@ -578,6 +516,7 @@
 </head>
 <body>
 
+    <!-- حاوية التواصل منفصلة وفي الجانب الأيسر للشاشة -->
     <div class="compact-contact-card">
         <div class="contact-line">
             <i class="fas fa-phone-alt"></i>
@@ -639,7 +578,7 @@
     </div>
 
     <div class="admin-modal" id="adminAuthWindow">
-        <div class="modal-content" id="modalContentWrapper">
+        <div class="modal-content">
             <button class="close-modal" onclick="closeAdminGateway()"><i class="fas fa-times"></i></button>
             
             <div id="loginFormSection">
@@ -656,51 +595,16 @@
             </div>
 
             <div id="adminActionSection" class="upload-panel">
-                <h2>لوحة التحكم وتحديث البيانات</h2>
+                <h2>لوحة تحديث البيانات </h2>
                 <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:15px;">
-                    يمكنك تعديل المنتجات مباشرة من الجدول بالأسفل وحفظها، أو تحميل شيت الاكسيل للتعديل عليه وإعادة رفعه.
+                    قم برفع ملف الـ Excel المحدث وسيتم تحديث فوراً وبنفس الترتيب.
                 </p>
-                
-                <div class="admin-actions-bar">
-                    <button class="action-btn" style="background: #27ae60; color: #fff; border:none;" onclick="saveTableChangesToServer()">
-                        <i class="fas fa-cloud-upload-alt"></i> حفظ التعديلات من الجدول
-                    </button>
-                    <button class="action-btn" style="background: #2980b9; color: #fff; border:none;" onclick="downloadCurrentCatalogAsExcel()">
-                        <i class="fas fa-download"></i> تحميل الشيت الحالي (Excel)
-                    </button>
-                    <button class="action-btn" style="background: #8e44ad; color: #fff; border:none;" onclick="addNewRowToEditableTable()">
-                        <i class="fas fa-plus"></i> إضافة منتج جديد
-                    </button>
-                </div>
-
                 <div class="file-drop-zone" onclick="document.getElementById('excelFileInput').click()">
                     <i class="fas fa-file-excel fa-3x" style="color: #27ae60; margin-bottom: 10px;"></i>
-                    <div>اضغط هنا لرفع ملف Excel محدث بالكامل</div>
+                    <div>اضغط هنا لرفع ملف</div>
                     <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display:none;" onchange="handleExcelFileUpload(event)">
                 </div>
-
-                <div id="uploadStatusMessage" style="font-size:0.9rem; font-weight:700; margin-top:10px; margin-bottom: 10px;"></div>
-
-                <div class="table-responsive">
-                    <table class="editable-table">
-                        <thead>
-                            <tr>
-                                <th>اسم المنتج</th>
-                                <th>كود المنتج</th>
-                                <th>التصنيف</th>
-                                <th>الكمية بالكرتونة</th>
-                                <th>سعر القطعة</th>
-                                <th>الصورة 1</th>
-                                <th>الصورة 2</th>
-                                <th>الصورة 3</th>
-                                <th>الصورة 4</th>
-                                <th>حذف</th>
-                            </tr>
-                        </thead>
-                        <tbody id="editableTableBody">
-                        </tbody>
-                    </table>
-                </div>
+                <div id="uploadStatusMessage" style="font-size:0.9rem; font-weight:700; margin-top:10px;"></div>
             </div>
         </div>
     </div>
@@ -881,178 +785,30 @@
         }
 
         function openAdminGateway() { document.getElementById('adminAuthWindow').classList.add('active'); }
-        
-        function closeAdminGateway() { 
-            document.getElementById('adminAuthWindow').classList.remove('active'); 
-            document.getElementById('modalContentWrapper').classList.remove('wide-panel');
-        }
+        function closeAdminGateway() { document.getElementById('adminAuthWindow').classList.remove('active'); }
 
-        // --- تحديث دالة التحقق لتكون هجينة ومرنة تماماً ضد مسميات السيرفر ونوع الطلب ---
         async function validateAdminCredentials() {
-            const user = document.getElementById('adminUserField').value.trim();
-            const pass = document.getElementById('adminPasswordField').value.trim();
+            const user = document.getElementById('adminUserField').value;
+            const pass = document.getElementById('adminPasswordField').value;
             if(!user || !pass) { alert("برجاء إدخال اسم المستخدم وكلمة المرور أولاً!"); return; }
 
-            // تجميع كل المتغيرات الممكنة لعدم حدوث أي خطأ في مسميات السيرفر
-            const queryParams = new URLSearchParams();
-            queryParams.append('action', 'loginVerification');
-            queryParams.append('username', user);
-            queryParams.append('user', user);
-            queryParams.append('password', pass);
-            queryParams.append('pass', pass);
-
-            const jsonBody = {
-                action: 'loginVerification',
-                username: user,
-                user: user,
-                password: pass,
-                pass: pass
-            };
-
-            let authResult = { success: false };
-
             try {
-                // المحاولة الأولى: POST متكامل بالرابط وجسم الطلب لضمان تلبية كل شروط دالة doPost
-                const postUrl = `${sheetWebUrl}?${queryParams.toString()}`;
-                const response = await fetch(postUrl, {
+                const response = await fetch(sheetWebUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(jsonBody)
+                    body: JSON.stringify({ action: 'loginVerification', username: user, password: pass })
                 });
-                authResult = await response.json();
-            } catch (postError) {
-                console.log("POST request fallback triggered.");
-            }
-
-            // المحاولة الثانية (Fallback): إذا رجع خطأ أو رفض الدخول، نجرب فوراً الـ GET (لو السيرفر شغال بدالة doGet)
-            if (!authResult || !authResult.success) {
-                try {
-                    const getUrl = `${sheetWebUrl}?${queryParams.toString()}&t=${Date.now()}`;
-                    const getResponse = await fetch(getUrl, { method: 'GET' });
-                    const getResult = await getResponse.json();
-                    if (getResult && getResult.success) {
-                        authResult = getResult;
-                    }
-                } catch (getError) {
-                    console.error("GET fallback error:", getError);
-                }
-            }
-
-            // معالجة النتيجة النهائية للمحاولتين المضمونتين
-            if (authResult && authResult.success) {
-                document.getElementById('loginFormSection').style.display = 'none';
-                document.getElementById('adminActionSection').style.display = 'block';
-                document.getElementById('modalContentWrapper').classList.add('wide-panel');
-                buildEditableTableBody();
-            } else {
-                alert("بيانات الإدارة غير صحيحة، يرجى المحاولة مرة أخرى.");
-            }
-        }
-
-        function buildEditableTableBody() {
-            const tbody = document.getElementById('editableTableBody');
-            tbody.innerHTML = '';
-            localProductsMasterArray.forEach((product, idx) => {
-                appendRowToTable(product, idx);
-            });
-        }
-
-        function appendRowToTable(product, idx) {
-            const tbody = document.getElementById('editableTableBody');
-            const tr = document.createElement('tr');
-            tr.className = "editable-product-row";
-            
-            tr.innerHTML = `
-                <td><input type="text" class="edit-title" value="${product['اسم المنتج'] || ''}"></td>
-                <td><input type="text" class="edit-code" value="${product['كود المنتج'] || ''}"></td>
-                <td><input type="text" class="edit-cat" value="${product['التصنيف'] || ''}"></td>
-                <td><input type="text" class="edit-boxQty" value="${product['الكمية داخل الكرتونة'] || ''}"></td>
-                <td><input type="text" class="edit-price" value="${product['سعر القطعة'] || '0'}"></td>
-                <td><input type="text" class="edit-img1" value="${product['الصورة'] || ''}"></td>
-                <td><input type="text" class="edit-img2" value="${product['الصوره 2'] || ''}"></td>
-                <td><input type="text" class="edit-img3" value="${product['الصوره 3'] || ''}"></td>
-                <td><input type="text" class="edit-img4" value="${product['الصوره 4'] || ''}"></td>
-                <td>
-                    <button class="action-btn" style="padding:5px 10px; background:#e74c3c; color:#fff; border:none;" onclick="this.closest('tr').remove()">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        }
-
-        function addNewRowToEditableTable() {
-            appendRowToTable({}, Date.now());
-        }
-
-        async function saveTableChangesToServer() {
-            const rows = document.querySelectorAll('.editable-product-row');
-            const dataToUpload = [];
-            
-            rows.forEach(row => {
-                const title = row.querySelector('.edit-title').value.trim();
-                if(!title) return; 
+                const authResult = await response.json();
                 
-                dataToUpload.push({
-                    "اسم المنتج": title,
-                    "كود المنتج": row.querySelector('.edit-code').value.trim(),
-                    "التصنيف": row.querySelector('.edit-cat').value.trim(),
-                    "الكمية داخل الكرتونة": row.querySelector('.edit-boxQty').value.trim(),
-                    "سعر القطعة": row.querySelector('.edit-price').value.trim(),
-                    "الصورة": row.querySelector('.edit-img1').value.trim(),
-                    "الصوره 2": row.querySelector('.edit-img2').value.trim(),
-                    "الصوره 3": row.querySelector('.edit-img3').value.trim(),
-                    "الصوره 4": row.querySelector('.edit-img4').value.trim()
-                });
-            });
-
-            const statusMsg = document.getElementById('uploadStatusMessage');
-            statusMsg.style.color = 'var(--text-primary)';
-            statusMsg.innerText = "جاري حفظ تحديثات الجدول على السيرفر...";
-
-            const optimizedSaveUrl = `${sheetWebUrl}?action=updateCatalogData`;
-
-            try {
-                const response = await fetch(optimizedSaveUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'updateCatalogData', data: dataToUpload })
-                });
-                const result = await response.json();
-
-                if (result.success) {
-                    statusMsg.style.color = '#2ecc71';
-                    statusMsg.innerText = "تم حفظ تعديلات الجدول بنجاح وتحديث الكتالوج!";
-                    localProductsMasterArray = dataToUpload;
-                    renderCatalogGrid(localProductsMasterArray);
+                if (authResult.success) {
+                    document.getElementById('loginFormSection').style.display = 'none';
+                    document.getElementById('adminActionSection').style.display = 'block';
                 } else {
-                    statusMsg.style.color = '#e74c3c';
-                    statusMsg.innerText = "فشل تحديث السيرفر: " + (result.message || "خطأ غير معروف");
+                    alert("بيانات الإدارة غير صحيحة، يرجى المحاولة مرة أخرى.");
                 }
             } catch (error) {
                 console.error(error);
-                statusMsg.style.color = '#e74c3c';
-                statusMsg.innerText = "حدث خطأ أثناء الاتصال بالخادم لحفظ التعديلات.";
+                alert("حدث خطأ أثناء الاتصال بالسيرفر للتحقق من البيانات.");
             }
-        }
-
-        function downloadCurrentCatalogAsExcel() {
-            const cleanExportData = localProductsMasterArray.map(p => ({
-                "اسم المنتج": p['اسم المنتج'] || '',
-                "كود المنتج": p['كود المنتج'] || '',
-                "التصنيف": p['التصنيف'] || '',
-                "الكمية داخل الكرتونة": p['الكمية داخل الكرتونة'] || '',
-                "سعر القطعة": p['سعر القطعة'] || '0',
-                "الصورة": p['الصورة'] || '',
-                "الصوره 2": p['الصوره 2'] || '',
-                "الصوره 3": p['الصوره 3'] || '',
-                "الصوره 4": p['الصوره 4'] || ''
-            }));
-
-            const worksheet = XLSX.utils.json_to_sheet(cleanExportData);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "المنتجات المحدثة");
-            XLSX.writeFile(workbook, "Awfarlak_Catalog_Manger.xlsx");
         }
 
         async function handleExcelFileUpload(event) {
@@ -1061,7 +817,7 @@
 
             const statusMsg = document.getElementById('uploadStatusMessage');
             statusMsg.style.color = 'var(--text-primary)';
-            statusMsg.innerText = "جاري قراءة وتحليل ملف الـ Excel...";
+            statusMsg.innerText = "جاري قراءة ملف الـ Excel وحساب المصفوفات...";
 
             const reader = new FileReader();
             reader.onload = async function(e) {
@@ -1070,46 +826,40 @@
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
-                    const parsedJsonData = XLSX.utils.sheet_to_json(worksheet);
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-                    if (!parsedJsonData || parsedJsonData.length === 0) {
-                        statusMsg.style.color = '#e74c3c';
-                        statusMsg.innerText = "الملف المرفوع فارغ أو تنسيقه غير صحيح.";
-                        return;
-                    }
+                    statusMsg.innerText = "جاري رفع البيانات وتحديث الكتالوج...";
 
-                    statusMsg.innerText = "جاري رفع البيانات الكاملة وتحديث قاعدة البيانات بالخادم...";
-
-                    const optimizedUploadUrl = `${sheetWebUrl}?action=updateCatalogData`;
-
-                    const response = await fetch(optimizedUploadUrl, {
+                    const response = await fetch(sheetWebUrl, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'updateCatalogData', data: parsedJsonData })
+                        body: JSON.stringify({ action: 'updateCatalogData', data: jsonData })
                     });
-                    const result = await response.json();
+                    const uploadResult = await response.json();
 
-                    if (result.success) {
+                    if (uploadResult.success) {
                         statusMsg.style.color = '#2ecc71';
-                        statusMsg.innerText = "تم رفع شيت الـ Excel وتحديث السيرفر بنجاح تام!";
-                        localProductsMasterArray = parsedJsonData;
-                        renderCatalogGrid(localProductsMasterArray);
-                        buildEditableTableBody();
+                        statusMsg.innerText = "تم تحديث البيانات بنجاح!";
+                        setTimeout(() => {
+                            closeAdminGateway();
+                            fetchAndRenderCatalog();
+                        }, 1000);
                     } else {
                         statusMsg.style.color = '#e74c3c';
-                        statusMsg.innerText = "فشل التحديث من الملف: " + (result.message || "خطأ داخلي في الـ Script");
+                        statusMsg.innerText = "فشل تحديث البيانات في السيرفر.";
                     }
-
-                } catch (err) {
-                    console.error(err);
+                } catch (error) {
+                    console.error(error);
                     statusMsg.style.color = '#e74c3c';
-                    statusMsg.innerText = "حدث خطأ غير متوقع أثناء معالجة ملف الإكسيل.";
+                    statusMsg.innerText = "حدث خطأ أثناء معالجة الملف المرفوع.";
                 }
             };
             reader.readAsArrayBuffer(file);
         }
 
-        window.onload = fetchAndRenderCatalog;
+        // تشغيل جلب البيانات وعرض الكتالوج بمجرد تحميل الصفحة
+        window.onload = function() {
+            fetchAndRenderCatalog();
+        };
     </script>
 </body>
 </html>
