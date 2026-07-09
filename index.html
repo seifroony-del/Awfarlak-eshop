@@ -444,7 +444,6 @@
             transition: max-width 0.4s ease;
         }
 
-        /* حاوية عريضة ديناميكية عندما تفتح لوحة الإدارة لعرض الجدول */
         .modal-content.wide-panel {
             max-width: 1400px;
             width: 95%;
@@ -491,7 +490,6 @@
         }
         .file-drop-zone:hover { border-color: var(--neon-orange); }
 
-        /* ستايل جدول تعديل البيانات الاحترافي */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -663,7 +661,6 @@
                     يمكنك تعديل المنتجات مباشرة من الجدول بالأسفل وحفظها، أو تحميل شيت الاكسيل للتعديل عليه وإعادة رفعه.
                 </p>
                 
-                <!-- أزرار التحكم والـ Download التي طلبتها مضافة هنا بالأعلى بشكل منسق -->
                 <div class="admin-actions-bar">
                     <button class="action-btn" style="background: #27ae60; color: #fff; border:none;" onclick="saveTableChangesToServer()">
                         <i class="fas fa-cloud-upload-alt"></i> حفظ التعديلات من الجدول
@@ -684,7 +681,6 @@
 
                 <div id="uploadStatusMessage" style="font-size:0.9rem; font-weight:700; margin-top:10px; margin-bottom: 10px;"></div>
 
-                <!-- تابل عرض المنتجات وتعديلها الذي طلبته متناسق تماماً وبكل التفاصيل -->
                 <div class="table-responsive">
                     <table class="editable-table">
                         <thead>
@@ -702,7 +698,6 @@
                             </tr>
                         </thead>
                         <tbody id="editableTableBody">
-                            <!-- يتم إدراج الأسطر ديناميكياً هنا -->
                         </tbody>
                     </table>
                 </div>
@@ -892,13 +887,17 @@
             document.getElementById('modalContentWrapper').classList.remove('wide-panel');
         }
 
+        // --- تعديل دالة التحقق لتمرير البيانات بشكل مزدوج (رابط + Body) لضمان القبول الفوري ---
         async function validateAdminCredentials() {
-            const user = document.getElementById('adminUserField').value;
-            const pass = document.getElementById('adminPasswordField').value;
+            const user = document.getElementById('adminUserField').value.trim();
+            const pass = document.getElementById('adminPasswordField').value.trim();
             if(!user || !pass) { alert("برجاء إدخال اسم المستخدم وكلمة المرور أولاً!"); return; }
 
+            // تمرير الأكشن واليوزر والباسورد في الرابط لتغذية e.parameter وفي نفس الوقت بالـ Body كـ JSON
+            const optimizedAuthUrl = `${sheetWebUrl}?action=loginVerification&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`;
+
             try {
-                const response = await fetch(sheetWebUrl, {
+                const response = await fetch(optimizedAuthUrl, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'loginVerification', username: user, password: pass })
                 });
@@ -907,9 +906,7 @@
                 if (authResult.success) {
                     document.getElementById('loginFormSection').style.display = 'none';
                     document.getElementById('adminActionSection').style.display = 'block';
-                    // تحويل حاوية المودال للشكل العريض لعرض الجدول بأريحية
                     document.getElementById('modalContentWrapper').classList.add('wide-panel');
-                    // بناء وعرض جدول التعديل المباشر فوراً
                     buildEditableTableBody();
                 } else {
                     alert("بيانات الإدارة غير صحيحة، يرجى المحاولة مرة أخرى.");
@@ -920,11 +917,9 @@
             }
         }
 
-        // --- بناء جدول التعديل الفوري من المصفوفة المحلية ---
         function buildEditableTableBody() {
             const tbody = document.getElementById('editableTableBody');
             tbody.innerHTML = '';
-            
             localProductsMasterArray.forEach((product, idx) => {
                 appendRowToTable(product, idx);
             });
@@ -958,14 +953,14 @@
             appendRowToTable({}, Date.now());
         }
 
-        // --- حفظ البيانات المعدلة من التابل وإرسالها للسيرفر ---
+        // --- تعديل دالة حفظ الجدول وتمرير الأكشن في الروابط لضمان التوجيه الصحيح بالخلفية ---
         async function saveTableChangesToServer() {
             const rows = document.querySelectorAll('.editable-product-row');
             const dataToUpload = [];
             
             rows.forEach(row => {
                 const title = row.querySelector('.edit-title').value.trim();
-                if(!title) return; // تخطي الأسطر الفارغة تماماً
+                if(!title) return; 
                 
                 dataToUpload.push({
                     "اسم المنتج": title,
@@ -984,8 +979,10 @@
             statusMsg.style.color = 'var(--text-primary)';
             statusMsg.innerText = "جاري حفظ تحديثات الجدول على السيرفر...";
 
+            const optimizedSaveUrl = `${sheetWebUrl}?action=updateCatalogData`;
+
             try {
-                const response = await fetch(sheetWebUrl, {
+                const response = await fetch(optimizedSaveUrl, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'updateCatalogData', data: dataToUpload })
                 });
@@ -1007,7 +1004,6 @@
             }
         }
 
-        // --- ميزة تنزيل شيت الـ Excel الحالي المأخوذ من داتا الموقع ---
         function downloadCurrentCatalogAsExcel() {
             const cleanExportData = localProductsMasterArray.map(p => ({
                 "اسم المنتج": p['اسم المنتج'] || '',
@@ -1024,12 +1020,10 @@
             const worksheet = XLSX.utils.json_to_sheet(cleanExportData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "المنتجات المحدثة");
-            
-            // تنزيل الملف باسم منسق للمتجر
             XLSX.writeFile(workbook, "Awfarlak_Catalog_Manger.xlsx");
         }
 
-        // --- إصلاح وإكمال دالة رفع ومعالجة ملف الـ Excel المقطوعة ---
+        // --- تعديل دالة رفع الإكسيل وتمرير الأكشن في الرابط لضمان التوجيه الصحيح بالخلفية ---
         async function handleExcelFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1045,8 +1039,6 @@
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
-                    
-                    // تحويل محتويات الشيت إلى مصفوفة JSON بنفس الهيدرز والترتيب المعتمد
                     const parsedJsonData = XLSX.utils.sheet_to_json(worksheet);
 
                     if (!parsedJsonData || parsedJsonData.length === 0) {
@@ -1057,8 +1049,9 @@
 
                     statusMsg.innerText = "جاري رفع البيانات الكاملة وتحديث قاعدة البيانات بالخادم...";
 
-                    // إرسال البيانات المحدثة بالكامل إلى جوجل أب سكريبت في الخلفية للـ Update
-                    const response = await fetch(sheetWebUrl, {
+                    const optimizedUploadUrl = `${sheetWebUrl}?action=updateCatalogData`;
+
+                    const response = await fetch(optimizedUploadUrl, {
                         method: 'POST',
                         body: JSON.stringify({ action: 'updateCatalogData', data: parsedJsonData })
                     });
@@ -1067,8 +1060,6 @@
                     if (result.success) {
                         statusMsg.style.color = '#2ecc71';
                         statusMsg.innerText = "تم رفع شيت الـ Excel وتحديث السيرفر بنجاح تام!";
-                        
-                        // تحديث الداتا المحلية وإعادة بناء الرندر للموقع والتابل المفتوح
                         localProductsMasterArray = parsedJsonData;
                         renderCatalogGrid(localProductsMasterArray);
                         buildEditableTableBody();
@@ -1086,7 +1077,6 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // تشغيل جلب الكتالوج فور تحميل الصفحة
         window.onload = fetchAndRenderCatalog;
     </script>
 </body>
